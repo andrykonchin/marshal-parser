@@ -1,4 +1,32 @@
 class Lexer
+  VERSION           = 0
+  ARRAY             = '['
+  OBJECT_WITH_IVARS = 'I'
+  STRING            = '"'
+  TRUE_VALUE        = 'T'
+  FALSE_VALUE       = 'F'
+  SYMBOL            = ':'
+  SYMBOL_LINK       = ';'
+  INTEGER           = 1
+  STRING_CONTENT    = 2
+  SYMBOL_CONTENT    = 3
+
+  def self.token_description(token)
+    case token
+      when VERSION            then "Version"
+      when ARRAY              then "Array"
+      when OBJECT_WITH_IVARS  then "Special object with instance variables"
+      when STRING             then "String"
+      when TRUE_VALUE         then "true"
+      when FALSE_VALUE        then "false"
+      when SYMBOL             then "Symbol"
+      when SYMBOL_LINK        then "Link to Symbol"
+      when INTEGER            then "Integer"
+      when STRING_CONTENT     then "String characters"
+      when SYMBOL_CONTENT     then "Symbol characters"
+    end
+  end
+
   attr_reader :tokens
 
   def initialize(string)
@@ -18,7 +46,7 @@ class Lexer
 
   def read_version
     version = @dump[@index, 2]
-    @tokens << [:version, @index, 2, version]
+    @tokens << [VERSION, @index, 2, version]
     @index += 2
   end
 
@@ -28,23 +56,23 @@ class Lexer
 
     case c
     when '['
-      @tokens << [:array_marker, @index-1, 1]
+      @tokens << [ARRAY, @index-1, 1]
       read_array
     when 'I'
-      @tokens << [:object_with_ivars_marker, @index-1, 1]
+      @tokens << [OBJECT_WITH_IVARS, @index-1, 1]
       read_object_with_instance_variables
     when '"'
-      @tokens << [:string_marker, @index-1, 1]
+      @tokens << [STRING, @index-1, 1]
       read_string
     when 'T'
-      @tokens << [:true, @index-1, 1]
+      @tokens << [TRUE_VALUE, @index-1, 1]
     when 'F'
-      @tokens << [:false, @index-1, 1]
+      @tokens << [FALSE_VALUE, @index-1, 1]
     when ':'
-      @tokens << [:symbol_marker, @index-1, 1]
+      @tokens << [SYMBOL, @index-1, 1]
       read_symbol
     when ';'
-      @tokens << [:symbol_link, @index-1, 1]
+      @tokens << [SYMBOL_LINK, @index-1, 1]
       read_symbol_link
     end
   end
@@ -56,8 +84,9 @@ class Lexer
 
   # TODO: support large Integers
   def read_integer
-    i = @dump[@index].ord - 5
-    @tokens << [:integer, @index, 1, i]
+    i = @dump[@index].ord
+    i -= 5 if i != 0
+    @tokens << [INTEGER, @index, 1, i]
     @index += 1
     i
   end
@@ -75,14 +104,14 @@ class Lexer
   def read_string
     length = read_integer
     string = @dump[@index, length]
-    @tokens << [:string, @index, length, string]
+    @tokens << [STRING_CONTENT, @index, length, string]
     @index += length
   end
 
   def read_symbol
     length = read_integer
     symbol = @dump[@index, length]
-    @tokens << [:symbol, @index, length, symbol]
+    @tokens << [SYMBOL_CONTENT, @index, length, symbol]
     @index += length
   end
 
@@ -97,8 +126,8 @@ lexer = Lexer.new(dump)
 lexer.run
 
 puts "Tokens with descriptions:"
-lexer.tokens.each do |id, index, length, *other|
-  puts "#{dump[index, length].dump} - #{id}, #{index}, #{length}, #{other.join(', ')}"
+lexer.tokens.each do |token_id, index, length, *other|
+  puts "#{dump[index, length].dump} - #{Lexer.token_description(token_id)} #{other.join(', ') if !other.empty?}"
 end
 
 puts ""
