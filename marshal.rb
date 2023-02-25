@@ -180,3 +180,181 @@ puts formatter.string
 #      "\x06" [length=1]
 #       E)
 #   T [true])
+
+class Parser
+  def initialize(lexer)
+    @lexer = lexer
+    @index = 0
+  end
+
+  def parse
+    version_node = build_ast_node
+    root_node = build_ast_node
+    root_node
+  end
+
+  private
+
+  def build_ast_node
+    token = next_token
+    type = token[0]
+
+    case type
+    when Lexer::VERSION
+      VersionNode.new(token)
+
+    when Lexer::ARRAY
+      length = next_token
+      elements = []
+
+      length[3].times do
+        elements << build_ast_node
+      end
+
+      ArrayNode.new(token, length, elements)
+
+    when Lexer::STRING
+      length = next_token
+      content = next_token
+
+      StringNode.new(token, length, content)
+
+    when Lexer::OBJECT_WITH_IVARS
+      child = build_ast_node
+
+      count = next_token
+      ivars = []
+
+      count[3].times do
+        name = build_ast_node
+        value = build_ast_node
+        ivars << [name, value]
+
+        ensure_node_type(name, [SymbolNode, SymbolLinkNode])
+      end
+
+      ObjectWithIVarsNode.new(token, count, ivars)
+
+    when Lexer::SYMBOL
+      length = next_token
+      content = next_token
+
+      SymbolNode.new(token, length, content)
+
+    when Lexer::TRUE_VALUE
+      TrueNode.new(token)
+
+    when Lexer::FALSE_VALUE
+      FalseNode.new(token)
+
+    when Lexer::SYMBOL_LINK
+      index = next_token
+
+      SymbolLinkNode.new(token, index)
+    end
+  end
+
+  def next_token
+    raise "No next token" if @index >= @lexer.tokens.size
+
+    @index += 1
+    @lexer.tokens[@index-1]
+  end
+
+  def ensure_node_type(node, allowed_classes)
+    return if allowed_classes.any? { |node_class| node_class === node }
+    raise "Node #{node} should be a #{allowed_classes.map(&:name).join(' or ')}"
+  end
+
+  class Node
+    def ensure_token_type(token, expected_token_id)
+      return if token[0] == expected_token_id
+      raise "Token #{token} should have type #{expected_token_id}"
+    end
+  end
+
+  class VersionNode < Node
+    def initialize(version_token)
+      ensure_token_type(version_token, Lexer::VERSION)
+      @version_token = version_token
+    end
+  end
+
+  class ArrayNode < Node
+    def initialize(marker_token, length_token, elements_nodes)
+      ensure_token_type(marker_token, Lexer::ARRAY)
+      ensure_token_type(length_token, Lexer::INTEGER)
+
+      @marker_token = marker_token
+      @length_token = length_token
+      @elements_nodes = elements_nodes
+    end
+  end
+
+  class StringNode < Node
+    def initialize(marker_token, length_token, content_token)
+      ensure_token_type(marker_token, Lexer::STRING)
+      ensure_token_type(length_token, Lexer::INTEGER)
+      ensure_token_type(content_token, Lexer::STRING_CONTENT)
+
+      @marker_token = marker_token
+      @length_token = length_token
+      @content_token = content_token
+    end
+  end
+
+  class ObjectWithIVarsNode < Node
+    def initialize(marker_token, count_token, ivars_nodes)
+      ensure_token_type(marker_token, Lexer::OBJECT_WITH_IVARS)
+      ensure_token_type(count_token, Lexer::INTEGER)
+
+      @marker_token = marker_token
+      @count_token = count_token
+      @ivars_nodes = ivars_nodes
+    end
+  end
+
+  class SymbolNode < Node
+    def initialize(marker_token, length_token, content_token)
+      ensure_token_type(marker_token, Lexer::SYMBOL)
+      ensure_token_type(length_token, Lexer::INTEGER)
+      ensure_token_type(content_token, Lexer::SYMBOL_CONTENT)
+
+      @marker_token = marker_token
+      @length_token = length_token
+      @content_token = content_token
+    end
+  end
+
+  class TrueNode < Node
+    def initialize(token)
+      ensure_token_type(token, Lexer::TRUE_VALUE)
+      @token = token
+    end
+  end
+
+  class FalseNode < Node
+    def initialize(token)
+      ensure_token_type(token, Lexer::FalseNode)
+      @token = token
+    end
+  end
+
+  class SymbolLinkNode < Node
+    def initialize(marker_token, index_token)
+      ensure_token_type(marker_token, Lexer::SYMBOL_LINK)
+      ensure_token_type(index_token, Lexer::INTEGER)
+
+      @marker_token = marker_token
+      @index_token = index_token
+    end
+  end
+end
+
+dump = "\x04\b[\aI\"\nhello\x06:\x06ETI\"\nworld\x06;\x00T"
+lexer = Lexer.new(dump)
+lexer.run
+
+require 'pp'
+parser = Parser.new(lexer)
+pp parser.parse
