@@ -46,7 +46,8 @@ class Lexer
 
   def read_version
     version = @dump[@index, 2]
-    @tokens << [VERSION, @index, 2, version]
+    version_unpacked = version.unpack("CC").join('.')
+    @tokens << [VERSION, @index, 2, version_unpacked]
     @index += 2
   end
 
@@ -120,30 +121,62 @@ class Lexer
   end
 end
 
+module TokensFormatter
+  class OneLine
+    def initialize(tokens, source_string)
+      @tokens = tokens
+      @source_string = source_string
+    end
+
+    def string
+      @tokens.map do |_, index, length, *|
+        token = @source_string[index, length]
+        token =~ /[^[:print:]]/ ? token.dump : token
+      end.join(" ")
+    end
+  end
+
+  class WithDescription
+    def initialize(tokens, source_string)
+      @tokens = tokens
+      @source_string = source_string
+    end
+
+    def string
+      @tokens.map do |token_id, index, length, *other|
+        value = @source_string[index, length].dump
+        description = Lexer.token_description(token_id)
+        other_list = '(' + other.join(', ') + ')' if !other.empty?
+
+        "%-10s - %s %s" % [value, description, other_list]
+      end.join("\n")
+    end
+  end
+end
 
 dump = "\x04\b[\aI\"\nhello\x06:\x06ETI\"\nworld\x06;\x00T"
 lexer = Lexer.new(dump)
 lexer.run
 
-puts "Tokens with descriptions:"
-lexer.tokens.each do |token_id, index, length, *other|
-  puts "#{dump[index, length].dump} - #{Lexer.token_description(token_id)} #{other.join(', ') if !other.empty?}"
-end
+puts "Tokens:"
+formatter = TokensFormatter::OneLine.new(lexer.tokens, dump)
+puts formatter.string
 
 puts ""
-puts "Tokens:"
-string = lexer.tokens.map do |_, index, length, *|
-  token = dump[index, length]
-  token =~ /[^[:print:]]/ ? token.dump : token
-end.join(" ")
-puts string
+
+puts "Tokens with descriptions:"
+formatter = TokensFormatter::WithDescription.new(lexer.tokens, dump)
+puts formatter.string
+
 
 # dump "\nhello\x06:\x06ET
 # tokens " "\n" hello "\x06" : "\x06" E T
 # hierarchy:
-# (" - string
-#   "\n" - length
-#   hello - content
-#   "\x06" - ivars count
-#   (: - symbol "\x06" - length E - content)
-#   T - true)
+# ("
+#   "\n" [length=5]
+#   hello
+#   "\x06" [ivars count=1]
+#   (:
+#      "\x06" [length=1]
+#       E)
+#   T [true])
