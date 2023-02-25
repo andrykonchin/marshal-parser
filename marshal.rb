@@ -1,144 +1,120 @@
-$dump = "\x04\b[\aI\"\nhello\x06:\x06ETI\"\nworld\x06;\x00T"
-$index = nil
-$symbols = {}
-
-class Visitor
+class Lexer
   attr_reader :tokens
 
-  def initialize
+  def initialize(string)
+    @dump = string
     @tokens = []
   end
 
-  def on_version(version)
-    @tokens << [version, 'version']
+  def run
+    @index = 0
+    @tokens = []
+
+    read_version
+    read
   end
 
-  def on_array_type(c)
-    @tokens << [c, 'Array']
+  private
+
+  def read_version
+    version = @dump[@index, 2]
+    @tokens << [:version, @index, 2, version]
+    @index += 2
   end
 
-  def on_object_with_instance_variables(c)
-    @tokens << [c, 'special object with instance variables']
+  def read
+    c = @dump[@index]
+    @index += 1
+
+    case c
+    when '['
+      @tokens << [:array_marker, @index-1, 1]
+      read_array
+    when 'I'
+      @tokens << [:object_with_ivars_marker, @index-1, 1]
+      read_object_with_instance_variables
+    when '"'
+      @tokens << [:string_marker, @index-1, 1]
+      read_string
+    when 'T'
+      @tokens << [:true, @index-1, 1]
+    when 'F'
+      @tokens << [:false, @index-1, 1]
+    when ':'
+      @tokens << [:symbol_marker, @index-1, 1]
+      read_symbol
+    when ';'
+      @tokens << [:symbol_link, @index-1, 1]
+      read_symbol_link
+    end
   end
 
-  def on_string_type(c)
-    @tokens << [c, 'String marker']
+  def read_array
+    count = read_integer
+    elements = (1..count).map { read }
   end
 
-  def on_true(c)
-    @tokens << [c, 'true']
+  # TODO: support large Integers
+  def read_integer
+    i = @dump[@index].ord - 5
+    @tokens << [:integer, @index, 1, i]
+    @index += 1
+    i
   end
 
-  def on_false(c)
-    @tokens << [c, 'false']
+  def read_object_with_instance_variables
+    object = read
+    ivars_count = read_integer
+
+    ivars_count.times do
+      name = read
+      value = read
+    end
   end
 
-  def on_symbol_type(c)
-    @tokens << [c, 'Symbol marker']
+  def read_string
+    length = read_integer
+    string = @dump[@index, length]
+    @tokens << [:string, @index, length, string]
+    @index += length
   end
 
-  def on_symbol_link(c)
-    @tokens << [c, 'Symbol link']
+  def read_symbol
+    length = read_integer
+    symbol = @dump[@index, length]
+    @tokens << [:symbol, @index, length, symbol]
+    @index += length
   end
 
-  def on_integer(string, integer)
-    @tokens << [string, "Integer (#{integer})"]
-  end
-
-  def on_symbol(symbol)
-    @tokens << [symbol, 'Symbol']
-  end
-
-  def on_string(string)
-    @tokens << [string, 'String']
-  end
-end
-
-def read(visitor)
-  c = $dump[$index]
-  $index += 1
-
-  case c
-  when '['
-    visitor.on_array_type(c)
-    read_array(visitor)
-  when 'I'
-    visitor.on_object_with_instance_variables(c)
-    read_object_with_instance_variables(visitor)
-  when '"'
-    visitor.on_string_type(c)
-    read_string(visitor)
-  when 'T'
-    visitor.on_true(c)
-  when 'F'
-    visitor.on_false(c)
-  when ':'
-    visitor.on_symbol_type(c)
-    read_symbol(visitor)
-  when ';'
-    visitor.on_symbol_link(c)
-    read_symbol_link(visitor)
-  end
-end
-
-def read_array(visitor)
-  count = read_integer(visitor)
-  elements = (1..count).map { read(visitor) }
-end
-
-# TODO: support large Integers
-def read_integer(visitor)
-  i = $dump[$index].ord - 5
-  visitor.on_integer($dump[$index], i)
-  $index += 1
-  i
-end
-
-def read_object_with_instance_variables(visitor)
-  object = read(visitor)
-  ivars_count = read_integer(visitor)
-
-  ivars_count.times do
-    name = read(visitor)
-    value = read(visitor)
+  def read_symbol_link
+    read_integer
   end
 end
 
-def read_string(visitor)
-  length = read_integer(visitor)
-  string = $dump[$index, length]
-  visitor.on_string(string)
-  $index += length
-end
 
-def read_symbol(visitor)
-  length = read_integer(visitor)
-  symbol = $dump[$index, length]
-  visitor.on_symbol(symbol)
-  $index += length
-  $symbols[$symbols.size] = symbol
-end
-
-def read_symbol_link(visitor)
-  link = read_integer(visitor)
-  $symbols[link]
-end
-
-visitor = Visitor.new
-
-version = $dump[0, 2]
-$index = 2
-visitor.on_version(version)
-
-read(visitor)
+dump = "\x04\b[\aI\"\nhello\x06:\x06ETI\"\nworld\x06;\x00T"
+lexer = Lexer.new(dump)
+lexer.run
 
 puts "Tokens with descriptions:"
-visitor.tokens.each do |token, description|
-  puts "#{token.dump} - #{description}"
+lexer.tokens.each do |id, index, length, *other|
+  puts "#{dump[index, length].dump} - #{id}, #{index}, #{length}, #{other.join(', ')}"
 end
 
+puts ""
 puts "Tokens:"
-string = visitor.tokens.map do |token, _|
+string = lexer.tokens.map do |_, index, length, *|
+  token = dump[index, length]
   token =~ /[^[:print:]]/ ? token.dump : token
 end.join(" ")
 puts string
+
+# dump "\nhello\x06:\x06ET
+# tokens " "\n" hello "\x06" : "\x06" E T
+# hierarchy:
+# (" - string
+#   "\n" - length
+#   hello - content
+#   "\x06" - ivars count
+#   (: - symbol "\x06" - length E - content)
+#   T - true)
