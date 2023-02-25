@@ -1,15 +1,17 @@
 class Lexer
   VERSION           = 0
-  ARRAY             = '['
-  OBJECT_WITH_IVARS = 'I'
-  STRING            = '"'
-  TRUE_VALUE        = 'T'
-  FALSE_VALUE       = 'F'
-  SYMBOL            = ':'
-  SYMBOL_LINK       = ';'
-  INTEGER           = 1
-  STRING_CONTENT    = 2
-  SYMBOL_CONTENT    = 3
+  ARRAY             = 1
+  OBJECT_WITH_IVARS = 2
+  STRING            = 3
+  TRUE_VALUE        = 4
+  FALSE_VALUE       = 5
+  SYMBOL            = 6
+  SYMBOL_LINK       = 7
+  INTEGER           = 8
+  STRING_CONTENT    = 9
+  SYMBOL_CONTENT    = 10
+
+  Token = Struct.new(:id, :index, :length, :value)
 
   def self.token_description(token)
     case token
@@ -47,7 +49,7 @@ class Lexer
   def read_version
     version = @dump[@index, 2]
     version_unpacked = version.unpack("CC").join('.')
-    @tokens << [VERSION, @index, 2, version_unpacked]
+    @tokens << Token.new(VERSION, @index, 2, version_unpacked)
     @index += 2
   end
 
@@ -57,23 +59,23 @@ class Lexer
 
     case c
     when '['
-      @tokens << [ARRAY, @index-1, 1]
+      @tokens << Token.new(ARRAY, @index-1, 1)
       read_array
     when 'I'
-      @tokens << [OBJECT_WITH_IVARS, @index-1, 1]
+      @tokens << Token.new(OBJECT_WITH_IVARS, @index-1, 1)
       read_object_with_instance_variables
     when '"'
-      @tokens << [STRING, @index-1, 1]
+      @tokens << Token.new(STRING, @index-1, 1)
       read_string
     when 'T'
-      @tokens << [TRUE_VALUE, @index-1, 1]
+      @tokens << Token.new(TRUE_VALUE, @index-1, 1)
     when 'F'
-      @tokens << [FALSE_VALUE, @index-1, 1]
+      @tokens << Token.new(FALSE_VALUE, @index-1, 1)
     when ':'
-      @tokens << [SYMBOL, @index-1, 1]
+      @tokens << Token.new(SYMBOL, @index-1, 1)
       read_symbol
     when ';'
-      @tokens << [SYMBOL_LINK, @index-1, 1]
+      @tokens << Token.new(SYMBOL_LINK, @index-1, 1)
       read_symbol_link
     end
   end
@@ -87,7 +89,7 @@ class Lexer
   def read_integer
     i = @dump[@index].ord
     i -= 5 if i != 0
-    @tokens << [INTEGER, @index, 1, i]
+    @tokens << Token.new(INTEGER, @index, 1, i)
     @index += 1
     i
   end
@@ -105,14 +107,14 @@ class Lexer
   def read_string
     length = read_integer
     string = @dump[@index, length]
-    @tokens << [STRING_CONTENT, @index, length, string]
+    @tokens << Token.new(STRING_CONTENT, @index, length, string)
     @index += length
   end
 
   def read_symbol
     length = read_integer
     symbol = @dump[@index, length]
-    @tokens << [SYMBOL_CONTENT, @index, length, symbol]
+    @tokens << Token.new(SYMBOL_CONTENT, @index, length, symbol)
     @index += length
   end
 
@@ -129,9 +131,9 @@ module TokensFormatter
     end
 
     def string
-      @tokens.map do |_, index, length, *|
-        token = @source_string[index, length]
-        token =~ /[^[:print:]]/ ? token.dump : token
+      @tokens.map do |token|
+        string = @source_string[token.index, token.length]
+        string =~ /[^[:print:]]/ ? string.dump : string
       end.join(" ")
     end
   end
@@ -143,12 +145,12 @@ module TokensFormatter
     end
 
     def string
-      @tokens.map do |token_id, index, length, *other|
-        value = @source_string[index, length].dump
-        description = Lexer.token_description(token_id)
-        other_list = '(' + other.join(', ') + ')' if !other.empty?
+      @tokens.map do |token|
+        string = @source_string[token.index, token.length].dump
+        description = Lexer.token_description(token.id)
+        value = token.value ? "(#{token.value})" : ""
 
-        "%-10s - %s %s" % [value, description, other_list]
+        "%-10s - %s %s" % [string, description, value]
       end.join("\n")
     end
   end
@@ -168,19 +170,6 @@ puts "Tokens with descriptions:"
 formatter = TokensFormatter::WithDescription.new(lexer.tokens, dump)
 puts formatter.string
 
-
-# dump "\nhello\x06:\x06ET
-# tokens " "\n" hello "\x06" : "\x06" E T
-# hierarchy:
-# ("
-#   "\n" [length=5]
-#   hello
-#   "\x06" [ivars count=1]
-#   (:
-#      "\x06" [length=1]
-#       E)
-#   T [true])
-
 class Parser
   def initialize(lexer)
     @lexer = lexer
@@ -197,9 +186,8 @@ class Parser
 
   def build_ast_node
     token = next_token
-    type = token[0]
 
-    case type
+    case token.id
     when Lexer::VERSION
       VersionNode.new(token)
 
@@ -207,7 +195,7 @@ class Parser
       length = next_token
       elements = []
 
-      length[3].times do
+      length.value.times do
         elements << build_ast_node
       end
 
@@ -225,7 +213,7 @@ class Parser
       count = next_token
       ivars = []
 
-      count[3].times do
+      count.value.times do
         name = build_ast_node
         value = build_ast_node
         ivars << [name, value]
@@ -268,7 +256,7 @@ class Parser
 
   class Node
     def ensure_token_type(token, expected_token_id)
-      return if token[0] == expected_token_id
+      return if token.id == expected_token_id
       raise "Token #{token} should have type #{expected_token_id}"
     end
   end
@@ -356,5 +344,19 @@ lexer = Lexer.new(dump)
 lexer.run
 
 require 'pp'
+puts ""
+puts "AST:"
 parser = Parser.new(lexer)
 pp parser.parse
+
+# dump "\nhello\x06:\x06ET
+# tokens " "\n" hello "\x06" : "\x06" E T
+# hierarchy:
+# ("
+#   "\n" [length=5]
+#   hello
+#   "\x06" [ivars count=1]
+#   (:
+#      "\x06" [length=1]
+#       E)
+#   T [true])
