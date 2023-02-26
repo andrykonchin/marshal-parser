@@ -7,16 +7,16 @@ end
 class Lexer
   # assign values 0, 1, 2, ...
   VERSION,
-  ARRAY,
-  OBJECT_WITH_IVARS,
-  STRING,
-  TRUE_VALUE,
-  FALSE_VALUE,
-  SYMBOL,
-  SYMBOL_LINK,
+  ARRAY_PREFIX,
+  OBJECT_WITH_IVARS_PREFIX,
+  STRING_PREFIX,
+  TRUE,
+  FALSE,
+  SYMBOL_PREFIX,
+  SYMBOL_LINK_PREFIX,
   INTEGER,
-  STRING_CONTENT,
-  SYMBOL_CONTENT = (0..100).to_a
+  STRING,
+  SYMBOL = (0..100).to_a
 
   Token = Struct.new(:id, :index, :length, :value)
 
@@ -50,23 +50,23 @@ class Lexer
 
     case c
     when '['
-      @tokens << Token.new(ARRAY, @index-1, 1)
+      @tokens << Token.new(ARRAY_PREFIX, @index-1, 1)
       read_array
     when 'I'
-      @tokens << Token.new(OBJECT_WITH_IVARS, @index-1, 1)
+      @tokens << Token.new(OBJECT_WITH_IVARS_PREFIX, @index-1, 1)
       read_object_with_instance_variables
     when '"'
-      @tokens << Token.new(STRING, @index-1, 1)
+      @tokens << Token.new(STRING_PREFIX, @index-1, 1)
       read_string
     when 'T'
-      @tokens << Token.new(TRUE_VALUE, @index-1, 1, true)
+      @tokens << Token.new(TRUE, @index-1, 1, true)
     when 'F'
-      @tokens << Token.new(FALSE_VALUE, @index-1, 1, false)
+      @tokens << Token.new(FALSE, @index-1, 1, false)
     when ':'
-      @tokens << Token.new(SYMBOL, @index-1, 1)
+      @tokens << Token.new(SYMBOL_PREFIX, @index-1, 1)
       read_symbol
     when ';'
-      @tokens << Token.new(SYMBOL_LINK, @index-1, 1)
+      @tokens << Token.new(SYMBOL_LINK_PREFIX, @index-1, 1)
       read_symbol_link
     end
   end
@@ -98,14 +98,14 @@ class Lexer
   def read_string
     length = read_integer
     string = @dump[@index, length]
-    @tokens << Token.new(STRING_CONTENT, @index, length, string)
+    @tokens << Token.new(STRING, @index, length, string)
     @index += length
   end
 
   def read_symbol
     length = read_integer
     symbol = @dump[@index, length]
-    @tokens << Token.new(SYMBOL_CONTENT, @index, length, symbol)
+    @tokens << Token.new(SYMBOL, @index, length, symbol)
     @index += length
   end
 
@@ -147,17 +147,17 @@ module TokensFormatter
 
     def self.token_description(token)
       case token
-      when Lexer::VERSION            then "Version"
-      when Lexer::ARRAY              then "Array"
-      when Lexer::OBJECT_WITH_IVARS  then "Special object with instance variables"
-      when Lexer::STRING             then "String"
-      when Lexer::TRUE_VALUE         then "true"
-      when Lexer::FALSE_VALUE        then "false"
-      when Lexer::SYMBOL             then "Symbol"
-      when Lexer::SYMBOL_LINK        then "Link to Symbol"
-      when Lexer::INTEGER            then "Integer"
-      when Lexer::STRING_CONTENT     then "String characters"
-      when Lexer::SYMBOL_CONTENT     then "Symbol characters"
+      when Lexer::VERSION                   then "Version"
+      when Lexer::ARRAY_PREFIX              then "Array"
+      when Lexer::OBJECT_WITH_IVARS_PREFIX  then "Special object with instance variables"
+      when Lexer::STRING_PREFIX             then "String"
+      when Lexer::TRUE                      then "true"
+      when Lexer::FALSE                     then "false"
+      when Lexer::SYMBOL_PREFIX             then "Symbol"
+      when Lexer::SYMBOL_LINK_PREFIX        then "Link to Symbol"
+      when Lexer::INTEGER                   then "Integer"
+      when Lexer::STRING                    then "String characters"
+      when Lexer::SYMBOL                    then "Symbol characters"
       end
     end
   end
@@ -203,7 +203,7 @@ class Parser
     when Lexer::VERSION
       VersionNode.new(token)
 
-    when Lexer::ARRAY
+    when Lexer::ARRAY_PREFIX
       length = next_token
       elements = []
 
@@ -213,13 +213,13 @@ class Parser
 
       ArrayNode.new(token, length, elements)
 
-    when Lexer::STRING
+    when Lexer::STRING_PREFIX
       length = next_token
       content = next_token
 
       StringNode.new(token, length, content)
 
-    when Lexer::OBJECT_WITH_IVARS
+    when Lexer::OBJECT_WITH_IVARS_PREFIX
       child = build_ast_node
 
       count = next_token
@@ -235,20 +235,20 @@ class Parser
 
       ObjectWithIVarsNode.new(token, count, ivars)
 
-    when Lexer::SYMBOL
+    when Lexer::SYMBOL_PREFIX
       length = next_token
       content = next_token
       @symbols << content.value
 
       SymbolNode.new(token, length, content, @symbols.size-1)
 
-    when Lexer::TRUE_VALUE
+    when Lexer::TRUE
       TrueNode.new(token)
 
-    when Lexer::FALSE_VALUE
+    when Lexer::FALSE
       FalseNode.new(token)
 
-    when Lexer::SYMBOL_LINK
+    when Lexer::SYMBOL_LINK_PREFIX
       index = next_token
 
       SymbolLinkNode.new(token, index)
@@ -307,7 +307,7 @@ class Parser
 
   class ArrayNode < Node
     def initialize(marker_token, length_token, elements_nodes)
-      assert_token_type marker_token, Lexer::ARRAY
+      assert_token_type marker_token, Lexer::ARRAY_PREFIX
       assert_token_type length_token, Lexer::INTEGER
 
       @marker_token = marker_token
@@ -326,9 +326,9 @@ class Parser
 
   class StringNode < Node
     def initialize(marker_token, length_token, content_token)
-      assert_token_type marker_token, Lexer::STRING
+      assert_token_type marker_token, Lexer::STRING_PREFIX
       assert_token_type length_token, Lexer::INTEGER
-      assert_token_type content_token, Lexer::STRING_CONTENT
+      assert_token_type content_token, Lexer::STRING
 
       @marker_token = marker_token
       @length_token = length_token
@@ -342,7 +342,7 @@ class Parser
 
   class ObjectWithIVarsNode < Node
     def initialize(marker_token, count_token, ivars_nodes)
-      assert_token_type marker_token, Lexer::OBJECT_WITH_IVARS
+      assert_token_type marker_token, Lexer::OBJECT_WITH_IVARS_PREFIX
       assert_token_type count_token, Lexer::INTEGER
 
       @marker_token = marker_token
@@ -363,9 +363,9 @@ class Parser
     include Annotatable
 
     def initialize(marker_token, length_token, content_token, symbol_number)
-      assert_token_type marker_token, Lexer::SYMBOL
+      assert_token_type marker_token, Lexer::SYMBOL_PREFIX
       assert_token_type length_token, Lexer::INTEGER
-      assert_token_type content_token, Lexer::SYMBOL_CONTENT
+      assert_token_type content_token, Lexer::SYMBOL
 
       @marker_token = marker_token
       @length_token = length_token
@@ -384,7 +384,7 @@ class Parser
 
   class TrueNode < Node
     def initialize(token)
-      assert_token_type(token, Lexer::TRUE_VALUE)
+      assert_token_type(token, Lexer::TRUE)
       @token = token
     end
 
@@ -408,7 +408,7 @@ class Parser
     include Annotatable
 
     def initialize(marker_token, index_token)
-      assert_token_type marker_token, Lexer::SYMBOL_LINK
+      assert_token_type marker_token, Lexer::SYMBOL_LINK_PREFIX
       assert_token_type index_token, Lexer::INTEGER
 
       @marker_token = marker_token
