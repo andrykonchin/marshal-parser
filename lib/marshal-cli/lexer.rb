@@ -322,48 +322,4 @@ module MarshalCLI
       read # read object (what #marshal_dump returned)
     end
   end
-
-  module TokensFormatter
-
-    class WithDescription
-      def initialize(tokens, source_string)
-        @tokens = tokens
-        @source_string = source_string
-      end
-
-      def string
-        @tokens.map do |token|
-          string = @source_string[token.index, token.length].dump
-          description = self.class.token_description(token.id)
-          value = token.value ? "(#{token.value})" : ""
-
-          "%-10s - %s %s" % [string, description, value]
-        end.join("\n")
-      end
-
-      def self.token_description(token)
-        case token
-        when Lexer::VERSION                   then "Version"
-        when Lexer::ARRAY_PREFIX              then "Array beginning"
-        when Lexer::OBJECT_WITH_IVARS_PREFIX  then "Special object with instance variables"
-        when Lexer::STRING_PREFIX             then "String beginning"
-        when Lexer::TRUE                      then "true"
-        when Lexer::FALSE                     then "false"
-        when Lexer::NIL                       then "nil"
-        when Lexer::SYMBOL_PREFIX             then "Symbol beginning"
-        when Lexer::SYMBOL_LINK_PREFIX        then "Link to Symbol"
-        when Lexer::CLASS_PREFIX              then "Class beginning"
-        when Lexer::MODULE_PREFIX             then "Module beginning"
-        when Lexer::OBJECT_PREFIX             then "Object beginning"
-        when Lexer::OBJECT_EXTENDED_PREFIX    then "Object extended with a module"
-        when Lexer::FLOAT_PREFIX              then "Float beginning"
-        when Lexer::INTEGER_PREFIX            then "Integer beginning"
-        when Lexer::FLOAT                     then "Float string representation"
-        when Lexer::INTEGER                   then "Integer encoded"
-        when Lexer::STRING                    then "String characters"
-        when Lexer::SYMBOL                    then "Symbol characters"
-        end
-      end
-    end
-  end
 end
