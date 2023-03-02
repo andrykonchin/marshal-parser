@@ -18,7 +18,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
 
       expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
         "\x04\b"   - Version (4.8)
-        "T"        - true (true)
+        "T"        - true
       STR
     end
 
@@ -255,7 +255,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         ":"        - Symbol beginning
         "\x06"     - Integer encoded (1)
         "E"        - Symbol characters
-        "T"        - true (true)
+        "T"        - true
       STR
     end
 
@@ -279,7 +279,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "\x04\b"   - Version (4.8)
         "["        - Array beginning
         "\a"       - Integer encoded (2)
-        "T"        - true (true)
+        "T"        - true
         "F"        - false
       STR
     end
@@ -647,7 +647,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)
           "E"        - Symbol characters
-          "T"        - true (true)
+          "T"        - true
         STR
       end
 

@@ -16,7 +16,7 @@ RSpec.describe MarshalCLI::Lexer do
 
       expect(string_to_tokens(dump)).to eq [
         Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
-        Lexer::Token.new(Lexer::TRUE, 2, 1, true)
+        Lexer::Token.new(Lexer::TRUE, 2, 1)
       ]
     end
 
@@ -26,7 +26,7 @@ RSpec.describe MarshalCLI::Lexer do
 
       expect(string_to_tokens(dump)).to eq [
         Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
-        Lexer::Token.new(Lexer::FALSE, 2, 1, false)
+        Lexer::Token.new(Lexer::FALSE, 2, 1)
       ]
     end
 
@@ -270,7 +270,7 @@ RSpec.describe MarshalCLI::Lexer do
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 11, 1),
         Lexer::Token.new(Lexer::INTEGER, 12, 1, 1),
         Lexer::Token.new(Lexer::SYMBOL, 13, 1),
-        Lexer::Token.new(Lexer::TRUE, 14, 1, true)
+        Lexer::Token.new(Lexer::TRUE, 14, 1)
       ]
     end
 
@@ -294,8 +294,8 @@ RSpec.describe MarshalCLI::Lexer do
         Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
         Lexer::Token.new(Lexer::ARRAY_PREFIX, 2, 1),
         Lexer::Token.new(Lexer::INTEGER, 3, 1, 2),
-        Lexer::Token.new(Lexer::TRUE, 4, 1, true),
-        Lexer::Token.new(Lexer::FALSE, 5, 1, false)
+        Lexer::Token.new(Lexer::TRUE, 4, 1),
+        Lexer::Token.new(Lexer::FALSE, 5, 1)
       ]
     end
 
@@ -367,7 +367,7 @@ RSpec.describe MarshalCLI::Lexer do
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 11, 1),
         Lexer::Token.new(Lexer::INTEGER, 12, 1, 4),
         Lexer::Token.new(Lexer::SYMBOL, 13, 4),
-        Lexer::Token.new(Lexer::FALSE, 17, 1, false),
+        Lexer::Token.new(Lexer::FALSE, 17, 1),
 
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 18, 1),
         Lexer::Token.new(Lexer::INTEGER, 19, 1, 5),
@@ -401,7 +401,7 @@ RSpec.describe MarshalCLI::Lexer do
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 10, 1),
         Lexer::Token.new(Lexer::INTEGER, 11, 1, 1),
         Lexer::Token.new(Lexer::SYMBOL, 12, 1),
-        Lexer::Token.new(Lexer::FALSE, 13, 1, false),
+        Lexer::Token.new(Lexer::FALSE, 13, 1),
       ]
     end
 
@@ -462,7 +462,7 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::SYMBOL_PREFIX, 33, 1),
           Lexer::Token.new(Lexer::INTEGER, 34, 1, 1),
           Lexer::Token.new(Lexer::SYMBOL, 35, 1),
-          Lexer::Token.new(Lexer::FALSE, 36, 1, false),
+          Lexer::Token.new(Lexer::FALSE, 36, 1),
         ]
       end
     end
@@ -533,7 +533,7 @@ RSpec.describe MarshalCLI::Lexer do
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 21, 1),
         Lexer::Token.new(Lexer::INTEGER, 22, 1, 1),
         Lexer::Token.new(Lexer::SYMBOL, 23, 1),
-        Lexer::Token.new(Lexer::FALSE, 24, 1, false),
+        Lexer::Token.new(Lexer::FALSE, 24, 1),
       ]
     end
 
@@ -628,7 +628,7 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::SYMBOL_PREFIX, 27, 1),
           Lexer::Token.new(Lexer::INTEGER, 28, 1, 1),
           Lexer::Token.new(Lexer::SYMBOL, 29, 1),
-          Lexer::Token.new(Lexer::FALSE, 30, 1, false),
+          Lexer::Token.new(Lexer::FALSE, 30, 1),
         ]
       end
     end
@@ -689,7 +689,7 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::SYMBOL_PREFIX, 22, 1),
           Lexer::Token.new(Lexer::INTEGER, 23, 1, 1),
           Lexer::Token.new(Lexer::SYMBOL, 24, 1),
-          Lexer::Token.new(Lexer::TRUE, 25, 1, true)
+          Lexer::Token.new(Lexer::TRUE, 25, 1)
         ]
       end
 

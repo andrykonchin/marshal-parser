@@ -86,11 +86,11 @@ module MarshalCLI
         @tokens << Token.new(STRUCT_PREFIX, @index-1, 1)
         read_struct
       when 'T'
-        @tokens << Token.new(TRUE, @index-1, 1, true)
+        @tokens << Token.new(TRUE, @index-1, 1)
       when 'F'
-        @tokens << Token.new(FALSE, @index-1, 1, false)
+        @tokens << Token.new(FALSE, @index-1, 1)
       when '0'
-        @tokens << Token.new(NIL, @index-1, 1, nil)
+        @tokens << Token.new(NIL, @index-1, 1)
       when ':'
         @tokens << Token.new(SYMBOL_PREFIX, @index-1, 1)
         read_symbol
