@@ -181,7 +181,7 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
 
           Lexer::Token.new(Lexer::BIG_INTEGER_PREFIX, 2, 1),
-          Lexer::Token.new(Lexer::PLUS_SIGN, 3, 1, 1),
+          Lexer::Token.new(Lexer::PLUS_SIGN, 3, 1),
           Lexer::Token.new(Lexer::INTEGER, 4, 1, 3),
           Lexer::Token.new(Lexer::BIG_INTEGER, 5, 6, 2.pow(32) + 1),
         ]
@@ -195,7 +195,7 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
 
           Lexer::Token.new(Lexer::BIG_INTEGER_PREFIX, 2, 1),
-          Lexer::Token.new(Lexer::MINUS_SIGN, 3, 1, -1),
+          Lexer::Token.new(Lexer::MINUS_SIGN, 3, 1),
           Lexer::Token.new(Lexer::INTEGER, 4, 1, 3),
           Lexer::Token.new(Lexer::BIG_INTEGER, 5, 6, -(2.pow(32)) - 1),
         ]

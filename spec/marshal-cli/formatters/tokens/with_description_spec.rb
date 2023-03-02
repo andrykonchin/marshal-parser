@@ -171,7 +171,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
           "\x04\b"   - Version (4.8)
           "l"        - Big Integer beginning
-          "+"        - Sign '+' (1)
+          "+"        - Sign '+'
           "\b"       - Integer encoded (3)
           "\x01\x00\x00\x00\x01\x00" - Big Integer encoded (4294967297)
         STR
@@ -184,7 +184,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
           "\x04\b"   - Version (4.8)
           "l"        - Big Integer beginning
-          "-"        - Sign '-' (-1)
+          "-"        - Sign '-'
           "\b"       - Integer encoded (3)
           "\x01\x00\x00\x00\x01\x00" - Big Integer encoded (-4294967297)
         STR

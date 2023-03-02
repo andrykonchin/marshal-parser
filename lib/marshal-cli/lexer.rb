@@ -184,7 +184,7 @@ module MarshalCLI
       length = i * 2
 
       value = @dump[@index, length].bytes.reverse.reduce { |acc, byte| (acc << 8) + byte }
-      value = -value if sign < 0
+      value = -value if sign.id == MINUS_SIGN
       @tokens << Token.new(BIG_INTEGER, @index, length, value)
 
       @index += length
@@ -195,17 +195,16 @@ module MarshalCLI
 
       case c
       when '+'
-        token = Token.new(PLUS_SIGN, @index, 1, 1)
+        token = Token.new(PLUS_SIGN, @index, 1)
       when '-'
-        token = Token.new(MINUS_SIGN, @index, 1, -1)
+        token = Token.new(MINUS_SIGN, @index, 1)
       else
         token = Token.new(UNKNOWN_SIGN, @index, 1)
       end
 
       @tokens << token
       @index += 1
-
-      token.value
+      token
     end
 
     def read_object_with_instance_variables
