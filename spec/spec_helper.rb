@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "marshal-cli"
+require_relative "support/fixtures"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

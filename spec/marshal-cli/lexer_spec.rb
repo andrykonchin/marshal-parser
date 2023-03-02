@@ -5,7 +5,7 @@ RSpec.describe MarshalCLI::Lexer do
     Lexer = described_class
 
     def string_to_tokens(string)
-      lexer = described_class.new(string)
+      lexer = MarshalCLI::Lexer.new(string)
       lexer.run
       lexer.tokens
     end
@@ -41,7 +41,7 @@ RSpec.describe MarshalCLI::Lexer do
     end
 
     describe 'Integer' do
-      it 'returns tokens for dumped 0 (1 byte)' do
+      it 'returns tokens for dumped 0' do
         dump = "\x04\bi\x00".b
         expect(Marshal.dump(0)).to eq dump
 
@@ -491,8 +491,6 @@ RSpec.describe MarshalCLI::Lexer do
       ]
     end
 
-    StructA = Struct.new(:a)
-
     it 'returns tokens for dumped Struct' do
       dump = "\x04\bS:\fStructA\x06:\x06ai\x06"
       expect(Marshal.dump(StructA.new(1))).to eq dump
@@ -559,9 +557,6 @@ RSpec.describe MarshalCLI::Lexer do
     end
 
     describe 'subclass of Core Library classes' do
-      class ArraySubclass < Array
-      end
-
       it 'returns tokens for dumped subclass of Array' do
         dump = "\x04\bC:\x12ArraySubclass[\x00"
         expect(Marshal.dump(ArraySubclass.new)).to eq dump
@@ -575,9 +570,6 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::ARRAY_PREFIX, 18, 1),
           Lexer::Token.new(Lexer::INTEGER, 19, 1, 0)
         ]
-      end
-
-      class StringSubclass < String
       end
 
       it 'returns tokens for dumped subclass of String' do
@@ -596,9 +588,6 @@ RSpec.describe MarshalCLI::Lexer do
         ]
       end
 
-      class HashSubclass < Hash
-      end
-
       it 'returns tokens for dumped subclass of Hash' do
         dump = "\x04\bC:\x11HashSubclass{\x00"
         expect(Marshal.dump(HashSubclass.new)).to eq dump
@@ -613,9 +602,6 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::INTEGER, 18, 1, 0)
         ]
 
-      end
-
-      class RegexpSubclass < Regexp
       end
 
       it 'returns tokens for dumped subclass of Regexp' do
@@ -685,23 +671,6 @@ RSpec.describe MarshalCLI::Lexer do
         ]
       end
 
-      class UserDefined
-        attr_reader :a, :b
-
-        def self.load(string)
-          a, b = string.split(":")
-          new(a.to_i, b.to_i)
-        end
-
-        def initialize(a, b)
-          @a, @b = a, b
-        end
-
-        def _dump(level)
-          "#{@a}:#{@b}"
-        end
-      end
-
       it 'returns tokens for dumped object with #_dump method' do
         dump = "\x04\bIu:\x10UserDefined\b1:2\x06:\x06ET"
 
@@ -722,20 +691,6 @@ RSpec.describe MarshalCLI::Lexer do
           Lexer::Token.new(Lexer::SYMBOL, 24, 1, 'E'),
           Lexer::Token.new(Lexer::TRUE, 25, 1, true)
         ]
-      end
-
-      class UserMarshal
-        def initialize(a, b)
-          @a, @b = a, b
-        end
-
-        def marshal_dump
-          [@a, @b]
-        end
-
-        def marshal_load(object)
-          @a, @b = object
-        end
       end
 
       it 'returns tokens for dumped object with #marshal_dump method' do
