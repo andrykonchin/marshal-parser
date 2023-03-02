@@ -173,7 +173,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "l"        - Big Integer beginning
           "+"        - Sign '+' (1)
           "\b"       - Integer encoded (3)
-          "\x01\x00\x00\x00\x01\x00" -  (4294967297)
+          "\x01\x00\x00\x00\x01\x00" - Big Integer encoded (4294967297)
         STR
       end
 
@@ -186,7 +186,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "l"        - Big Integer beginning
           "-"        - Sign '-' (-1)
           "\b"       - Integer encoded (3)
-          "\x01\x00\x00\x00\x01\x00" -  (-4294967297)
+          "\x01\x00\x00\x00\x01\x00" - Big Integer encoded (-4294967297)
         STR
       end
     end

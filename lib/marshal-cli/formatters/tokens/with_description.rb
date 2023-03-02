@@ -44,6 +44,7 @@ module MarshalCLI
           when Lexer::SUBCLASS_OF_CORE_LIBRARY_CLASS_PREFIX then "Instance of a Core Library class subclass beginning"
           when Lexer::FLOAT                             then "Float string representation"
           when Lexer::INTEGER                           then "Integer encoded"
+          when Lexer::BIG_INTEGER                       then "Big Integer encoded"
           when Lexer::STRING                            then "String characters"
           when Lexer::SYMBOL                            then "Symbol characters"
           when Lexer::PLUS_SIGN                         then "Sign '+'"
