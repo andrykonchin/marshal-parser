@@ -220,15 +220,13 @@ module MarshalCLI
 
     def read_string
       length = read_integer
-      string = @dump[@index, length]
-      @tokens << Token.new(STRING, @index, length, string)
+      @tokens << Token.new(STRING, @index, length)
       @index += length
     end
 
     def read_symbol
       length = read_integer
-      symbol = @dump[@index, length]
-      @tokens << Token.new(SYMBOL, @index, length, symbol)
+      @tokens << Token.new(SYMBOL, @index, length)
       @index += length
     end
 
@@ -280,15 +278,13 @@ module MarshalCLI
 
     def read_class
       length = read_integer
-      string = @dump[@index, length]
-      @tokens << Token.new(STRING, @index, length, string)
+      @tokens << Token.new(STRING, @index, length)
       @index += length
     end
 
     def read_module
       length = read_integer
-      string = @dump[@index, length]
-      @tokens << Token.new(STRING, @index, length, string)
+      @tokens << Token.new(STRING, @index, length)
       @index += length
     end
 

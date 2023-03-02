@@ -212,7 +212,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "U"        - Object with #marshal_dump and #marshal_load
         ":"        - Symbol beginning
         "\r"       - Integer encoded (8)
-        "Rational" - Symbol characters (Rational)
+        "Rational" - Symbol characters
         "["        - Array beginning
         "\a"       - Integer encoded (2)
         "i"        - Integer beginning
@@ -231,7 +231,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "U"        - Object with #marshal_dump and #marshal_load
         ":"        - Symbol beginning
         "\f"       - Integer encoded (7)
-        "Complex"  - Symbol characters (Complex)
+        "Complex"  - Symbol characters
         "["        - Array beginning
         "\a"       - Integer encoded (2)
         "i"        - Integer beginning
@@ -250,11 +250,11 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "I"        - Special object with instance variables
         "\""       - String beginning
         "\n"       - Integer encoded (5)
-        "Hello"    - String characters (Hello)
+        "Hello"    - String characters
         "\x06"     - Integer encoded (1)
         ":"        - Symbol beginning
         "\x06"     - Integer encoded (1)
-        "E"        - Symbol characters (E)
+        "E"        - Symbol characters
         "T"        - true (true)
       STR
     end
@@ -267,7 +267,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "\x04\b"   - Version (4.8)
         ":"        - Symbol beginning
         "\n"       - Integer encoded (5)
-        "Hello"    - Symbol characters (Hello)
+        "Hello"    - Symbol characters
       STR
     end
 
@@ -295,7 +295,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)
-          "a"        - Symbol characters (a)
+          "a"        - Symbol characters
           "i"        - Integer beginning
           "\x00"     - Integer encoded (0)
         STR
@@ -328,7 +328,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "C"        - Instance of a Core Library class subclass beginning
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "Hash"     - Symbol characters (Hash)
+          "Hash"     - Symbol characters
           "{"        - Hash beginning
           "\x00"     - Integer encoded (0)
         STR
@@ -344,20 +344,20 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "o"        - Object beginning
         ":"        - Symbol beginning
         "\n"       - Integer encoded (5)
-        "Range"    - Symbol characters (Range)
+        "Range"    - Symbol characters
         "\b"       - Integer encoded (3)
         ":"        - Symbol beginning
         "\t"       - Integer encoded (4)
-        "excl"     - Symbol characters (excl)
+        "excl"     - Symbol characters
         "F"        - false
         ":"        - Symbol beginning
         "\n"       - Integer encoded (5)
-        "begin"    - Symbol characters (begin)
+        "begin"    - Symbol characters
         "i"        - Integer beginning
         "\x00"     - Integer encoded (0)
         ":"        - Symbol beginning
         "\b"       - Integer encoded (3)
-        "end"      - Symbol characters (end)
+        "end"      - Symbol characters
         "i"        - Integer beginning
         "/"        - Integer encoded (42)
       STR
@@ -372,12 +372,12 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "I"        - Special object with instance variables
         "/"        - Regexp beginning
         "\b"       - Integer encoded (3)
-        "abc"      - String characters (abc)
+        "abc"      - String characters
         "\x00"     - Integer encoded (0)
         "\x06"     - Integer encoded (1)
         ":"        - Symbol beginning
         "\x06"     - Integer encoded (1)
-        "E"        - Symbol characters (E)
+        "E"        - Symbol characters
         "F"        - false
       STR
     end
@@ -395,18 +395,18 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "u"        - Object with #_dump and .load
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "Time"     - Symbol characters (Time)
+          "Time"     - Symbol characters
           "\r"       - Integer encoded (8)
-          "i\xC7\x1E\x80\x00\x00\xE0\xCD" - String characters (i????)
+          "i\xC7\x1E\x80\x00\x00\xE0\xCD" - String characters
           "\a"       - Integer encoded (2)
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
-          "offset"   - Symbol characters (offset)
+          "offset"   - Symbol characters
           "i"        - Integer beginning
           "\x020*"   - Integer encoded (10800)
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "zone"     - Symbol characters (zone)
+          "zone"     - Symbol characters
           "0"        - nil
         STR
       end
@@ -423,21 +423,21 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "u"        - Object with #_dump and .load
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "Time"     - Symbol characters (Time)
+          "Time"     - Symbol characters
           "\r"       - Integer encoded (8)
-          "l\xC7\x1E\xC0,\x01\xE0\xCD" - String characters (l??,??)
+          "l\xC7\x1E\xC0,\x01\xE0\xCD" - String characters
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "zone"     - Symbol characters (zone)
+          "zone"     - Symbol characters
           "I"        - Special object with instance variables
           "\""       - String beginning
           "\b"       - Integer encoded (3)
-          "UTC"      - String characters (UTC)
+          "UTC"      - String characters
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)
-          "E"        - Symbol characters (E)
+          "E"        - Symbol characters
           "F"        - false
         STR
       end
@@ -451,7 +451,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "\x04\b"   - Version (4.8)
         "c"        - Class beginning
         "\v"       - Integer encoded (6)
-        "String"   - String characters (String)
+        "String"   - String characters
       STR
     end
 
@@ -463,7 +463,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "\x04\b"   - Version (4.8)
         "m"        - Module beginning
         "\x0F"     - Integer encoded (10)
-        "Enumerable" - String characters (Enumerable)
+        "Enumerable" - String characters
       STR
     end
 
@@ -476,11 +476,11 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "S"        - Struct beginning
         ":"        - Symbol beginning
         "\f"       - Integer encoded (7)
-        "StructA"  - Symbol characters (StructA)
+        "StructA"  - Symbol characters
         "\x06"     - Integer encoded (1)
         ":"        - Symbol beginning
         "\x06"     - Integer encoded (1)
-        "a"        - Symbol characters (a)
+        "a"        - Symbol characters
         "i"        - Integer beginning
         "\x06"     - Integer encoded (1)
       STR
@@ -496,13 +496,13 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "u"        - Object with #_dump and .load
         ":"        - Symbol beginning
         "\r"       - Integer encoded (8)
-        "Encoding" - Symbol characters (Encoding)
+        "Encoding" - Symbol characters
         "\n"       - Integer encoded (5)
-        "UTF-8"    - String characters (UTF-8)
+        "UTF-8"    - String characters
         "\x06"     - Integer encoded (1)
         ":"        - Symbol beginning
         "\x06"     - Integer encoded (1)
-        "E"        - Symbol characters (E)
+        "E"        - Symbol characters
         "F"        - false
       STR
     end
@@ -516,9 +516,9 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         "u"        - Object with #_dump and .load
         ":"        - Symbol beginning
         "\x0F"     - Integer encoded (10)
-        "BigDecimal" - Symbol characters (BigDecimal)
+        "BigDecimal" - Symbol characters
         "\x0F"     - Integer encoded (10)
-        "18:0.314e1" - String characters (18:0.314e1)
+        "18:0.314e1" - String characters
       STR
     end
 
@@ -532,7 +532,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "C"        - Instance of a Core Library class subclass beginning
           ":"        - Symbol beginning
           "\x12"     - Integer encoded (13)
-          "ArraySubclass" - Symbol characters (ArraySubclass)
+          "ArraySubclass" - Symbol characters
           "["        - Array beginning
           "\x00"     - Integer encoded (0)
         STR
@@ -547,10 +547,10 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "C"        - Instance of a Core Library class subclass beginning
           ":"        - Symbol beginning
           "\x13"     - Integer encoded (14)
-          "StringSubclass" - Symbol characters (StringSubclass)
+          "StringSubclass" - Symbol characters
           "\""       - String beginning
           "\x00"     - Integer encoded (0)
-          ""         - String characters ()
+          ""         - String characters
         STR
       end
 
@@ -563,7 +563,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "C"        - Instance of a Core Library class subclass beginning
           ":"        - Symbol beginning
           "\x11"     - Integer encoded (12)
-          "HashSubclass" - Symbol characters (HashSubclass)
+          "HashSubclass" - Symbol characters
           "{"        - Hash beginning
           "\x00"     - Integer encoded (0)
         STR
@@ -579,15 +579,15 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "C"        - Instance of a Core Library class subclass beginning
           ":"        - Symbol beginning
           "\x13"     - Integer encoded (14)
-          "RegexpSubclass" - Symbol characters (RegexpSubclass)
+          "RegexpSubclass" - Symbol characters
           "/"        - Regexp beginning
           "\b"       - Integer encoded (3)
-          "abc"      - String characters (abc)
+          "abc"      - String characters
           "\x00"     - Integer encoded (0)
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)
-          "E"        - Symbol characters (E)
+          "E"        - Symbol characters
           "F"        - false
         STR
       end
@@ -603,7 +603,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "o"        - Object beginning
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
-          "Object"   - Symbol characters (Object)
+          "Object"   - Symbol characters
           "\x00"     - Integer encoded (0)
         STR
       end
@@ -620,11 +620,11 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "o"        - Object beginning
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
-          "Object"   - Symbol characters (Object)
+          "Object"   - Symbol characters
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\t"       - Integer encoded (4)
-          "@foo"     - Symbol characters (@foo)
+          "@foo"     - Symbol characters
           "i"        - Integer beginning
           "\x00"     - Integer encoded (0)
         STR
@@ -640,13 +640,13 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "u"        - Object with #_dump and .load
           ":"        - Symbol beginning
           "\x10"     - Integer encoded (11)
-          "UserDefined" - Symbol characters (UserDefined)
+          "UserDefined" - Symbol characters
           "\b"       - Integer encoded (3)
-          "1:2"      - String characters (1:2)
+          "1:2"      - String characters
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)
-          "E"        - Symbol characters (E)
+          "E"        - Symbol characters
           "T"        - true (true)
         STR
       end
@@ -660,7 +660,7 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "U"        - Object with #marshal_dump and #marshal_load
           ":"        - Symbol beginning
           "\x10"     - Integer encoded (11)
-          "UserMarshal" - Symbol characters (UserMarshal)
+          "UserMarshal" - Symbol characters
           "["        - Array beginning
           "\a"       - Integer encoded (2)
           "i"        - Integer beginning
@@ -682,11 +682,11 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
           "e"        - Object extended with a module
           ":"        - Symbol beginning
           "\x0F"     - Integer encoded (10)
-          "Comparable" - Symbol characters (Comparable)
+          "Comparable" - Symbol characters
           "o"        - Object beginning
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
-          "Object"   - Symbol characters (Object)
+          "Object"   - Symbol characters
           "\x00"     - Integer encoded (0)
         STR
       end
