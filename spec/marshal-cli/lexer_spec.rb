@@ -693,6 +693,29 @@ RSpec.describe MarshalCLI::Lexer do
         ]
       end
 
+      it 'returns tokens for dumped object with duplicates' do
+        dump = "\x04\b[\bo:\vObject\x00T@\x06"
+        object = Object.new
+        expect(Marshal.dump([object, true, object])).to eq dump
+
+        expect(string_to_tokens(dump)).to eq [
+          Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
+          Lexer::Token.new(Lexer::ARRAY_PREFIX, 2, 1),
+          Lexer::Token.new(Lexer::INTEGER, 3, 1, 3),
+
+          Lexer::Token.new(Lexer::OBJECT_PREFIX, 4, 1),
+          Lexer::Token.new(Lexer::SYMBOL_PREFIX, 5, 1),
+          Lexer::Token.new(Lexer::INTEGER, 6, 1, 6),
+          Lexer::Token.new(Lexer::SYMBOL, 7, 6),
+          Lexer::Token.new(Lexer::INTEGER, 13, 1, 0),
+
+          Lexer::Token.new(Lexer::TRUE, 14, 1),
+
+          Lexer::Token.new(Lexer::OBJECT_LINK_PREFIX, 15, 1),
+          Lexer::Token.new(Lexer::INTEGER, 16, 1, 1),
+        ]
+      end
+
       it 'returns tokens for dumped object with #_dump method' do
         dump = "\x04\bIu:\x10UserDefined\b1:2\x06:\x06ET"
 

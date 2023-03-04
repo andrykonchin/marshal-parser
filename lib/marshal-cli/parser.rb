@@ -197,6 +197,11 @@ module MarshalCLI
 
         ObjectNode.new(token, class_name_node, ivars_count, ivars_nodes)
 
+      when Lexer::OBJECT_LINK_PREFIX
+        index = next_token
+
+        ObjectLinkNode.new(token, index)
+
       when Lexer::OBJECT_WITH_DUMP_PREFIX
         class_name_node = build_ast_node
         assert_node_type class_name_node, SymbolNode, SymbolLinkNode
@@ -650,6 +655,24 @@ module MarshalCLI
 
       def children
         [@class_name_node] + @ivars_nodes
+      end
+    end
+
+    class ObjectLinkNode < Node
+      def initialize(prefix, index)
+        assert_token_type prefix, Lexer::OBJECT_LINK_PREFIX
+        assert_token_type index, Lexer::INTEGER
+
+        @prefix = prefix
+        @index = index
+      end
+
+      def tokens
+        [@prefix, @index]
+      end
+
+      def decoded_value
+        @index.value
       end
     end
 

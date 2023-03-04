@@ -40,6 +40,7 @@ module MarshalCLI
           when Lexer::CLASS_PREFIX                      then "Class beginning"
           when Lexer::MODULE_PREFIX                     then "Module beginning"
           when Lexer::OBJECT_PREFIX                     then "Object beginning"
+          when Lexer::OBJECT_LINK_PREFIX                then "Link to object"
           when Lexer::OBJECT_EXTENDED_PREFIX            then "Object extended with a module"
           when Lexer::SUBCLASS_OF_CORE_LIBRARY_CLASS_PREFIX then "Instance of a Core Library class subclass beginning"
           when Lexer::FLOAT                             then "Float string representation"

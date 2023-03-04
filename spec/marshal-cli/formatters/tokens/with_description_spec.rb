@@ -649,6 +649,26 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
         STR
       end
 
+      it 'returns tokens for dumped object with duplicates' do
+        dump = "\x04\b[\bo:\vObject\x00T@\x06"
+        object = Object.new
+        expect(Marshal.dump([object, true, object])).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          "\x04\b"   - Version (4.8)
+          "["        - Array beginning
+          "\b"       - Integer encoded (3)
+          "o"        - Object beginning
+          ":"        - Symbol beginning
+          "\v"       - Integer encoded (6)
+          "Object"   - Symbol characters
+          "\x00"     - Integer encoded (0)
+          "T"        - true
+          "@"        - Link to object
+          "\x06"     - Integer encoded (1)
+        STR
+      end
+
       it 'returns tokens for dumped object with #_dump method' do
         dump = "\x04\bIu:\x10UserDefined\b1:2\x06:\x06ET"
         expect(Marshal.dump(UserDefined.new(1, 2))).to eq dump

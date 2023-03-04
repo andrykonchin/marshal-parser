@@ -472,6 +472,23 @@ RSpec.describe MarshalCLI::Parser do
         )
       end
 
+      it 'returns AST for dumped object with duplicates' do
+        dump = "\x04\b[\bo:\vObject\x00T@\x06"
+        object = Object.new
+        expect(Marshal.dump([object, true, object])).to eq dump
+
+        expect(string_to_ast(dump)).to be_like_ast(
+          Parser::ArrayNode => children_nodes(
+            {
+              Parser::ObjectNode => children_nodes(
+                { Parser::SymbolNode => literal_value('Object', dump) })
+            },
+            Parser::TrueNode,
+            Parser::ObjectLinkNode => encoded_value(1)
+          )
+        )
+      end
+
       it 'returns AST for dumped object with #_dump method' do
         dump = "\x04\bIu:\x10UserDefined\b1:2\x06:\x06ET"
         expect(Marshal.dump(UserDefined.new(1, 2))).to eq dump
