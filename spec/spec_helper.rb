@@ -2,6 +2,10 @@
 
 require "marshal-cli"
 require_relative "support/fixtures"
+require_relative "support/be_like_ast"
+require_relative "support/has_children_nodes"
+require_relative "support/has_encoded_value"
+require_relative "support/has_literal_value"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
