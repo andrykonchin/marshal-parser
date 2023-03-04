@@ -179,7 +179,19 @@ RSpec.describe MarshalCLI::Parser do
       expect(Marshal.dump(:Hello)).to eq dump
 
       expect(string_to_ast(dump)).to be_like_ast(
-          Parser::SymbolNode => literal_value('Hello', dump))
+        Parser::SymbolNode => literal_value('Hello', dump))
+    end
+
+    it 'returns AST for dumped Symbol when there are duplicates' do
+      dump = "\x04\b[\b:\nHello:\nworld;\x00"
+      expect(Marshal.dump([:Hello, :world, :Hello])).to eq dump
+
+      expect(string_to_ast(dump)).to be_like_ast(
+        Parser::ArrayNode => children_nodes(
+          { Parser::SymbolNode => literal_value('Hello', dump) },
+          { Parser::SymbolNode => literal_value('world', dump) },
+          { Parser::SymbolLinkNode => encoded_value(0) },
+        ))
     end
 
     it 'returns AST for dumped Array' do
@@ -370,7 +382,8 @@ RSpec.describe MarshalCLI::Parser do
 
       expect(string_to_ast(dump)).to be_like_ast(
         Parser::ObjectWithDumpNode => [
-          children_nodes(Parser::SymbolNode => literal_value('BigDecimal', dump)),
+          children_nodes(
+            Parser::SymbolNode => literal_value('BigDecimal', dump)),
           literal_value('18:0.314e1', dump)
         ]
       )

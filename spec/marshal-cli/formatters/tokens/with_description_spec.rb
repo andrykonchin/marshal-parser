@@ -271,6 +271,25 @@ RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
       STR
     end
 
+    it 'returns tokens for dumped Symbol when there are duplicates' do
+      dump = "\x04\b[\b:\nHello:\nworld;\x00"
+      expect(Marshal.dump([:Hello, :world, :Hello])).to eq dump
+
+      expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+        "\x04\b"   - Version (4.8)
+        "["        - Array beginning
+        "\b"       - Integer encoded (3)
+        ":"        - Symbol beginning
+        "\n"       - Integer encoded (5)
+        "Hello"    - Symbol characters
+        ":"        - Symbol beginning
+        "\n"       - Integer encoded (5)
+        "world"    - Symbol characters
+        ";"        - Link to Symbol
+        "\x00"     - Integer encoded (0)
+      STR
+    end
+
     it 'returns tokens for dumped Array' do
       dump = "\x04\b[\aTF"
       expect(Marshal.dump([true, false])).to eq dump

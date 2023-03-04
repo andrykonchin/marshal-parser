@@ -161,6 +161,13 @@ RSpec.describe MarshalCLI::Formatters::Tokens::OneLine do
       expect(formatted_output(dump)).to eq '"\x04\b" : "\n" Hello'.b
     end
 
+    it 'returns tokens for dumped Symbol when there are duplicates' do
+      dump = "\x04\b[\b:\nHello:\nworld;\x00"
+      expect(Marshal.dump([:Hello, :world, :Hello])).to eq dump
+
+      expect(formatted_output(dump)).to eq '"\x04\b" [ "\b" : "\n" Hello : "\n" world ; "\x00"'
+    end
+
     it 'returns tokens for dumped Array' do
       dump = "\x04\b[\aTF"
       expect(Marshal.dump([true, false])).to eq dump

@@ -286,6 +286,28 @@ RSpec.describe MarshalCLI::Lexer do
       ]
     end
 
+    it 'returns tokens for dumped Symbol when there are duplicates' do
+      dump = "\x04\b[\b:\nHello:\nworld;\x00"
+      expect(Marshal.dump([:Hello, :world, :Hello])).to eq dump
+
+      expect(string_to_tokens(dump)).to eq [
+        Lexer::Token.new(Lexer::VERSION, 0, 2, '4.8'),
+        Lexer::Token.new(Lexer::ARRAY_PREFIX, 2, 1),
+        Lexer::Token.new(Lexer::INTEGER, 3, 1, 3),
+
+        Lexer::Token.new(Lexer::SYMBOL_PREFIX, 4, 1),
+        Lexer::Token.new(Lexer::INTEGER, 5, 1, 5),
+        Lexer::Token.new(Lexer::SYMBOL, 6, 5),
+
+        Lexer::Token.new(Lexer::SYMBOL_PREFIX, 11, 1),
+        Lexer::Token.new(Lexer::INTEGER, 12, 1, 5),
+        Lexer::Token.new(Lexer::SYMBOL, 13, 5),
+
+        Lexer::Token.new(Lexer::SYMBOL_LINK_PREFIX, 18, 1),
+        Lexer::Token.new(Lexer::INTEGER, 19, 1, 0),
+      ]
+    end
+
     it 'returns tokens for dumped Array' do
       dump = "\x04\b[\aTF"
       expect(Marshal.dump([true, false])).to eq dump
