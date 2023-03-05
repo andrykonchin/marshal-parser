@@ -38,8 +38,8 @@ module MarshalCLI
 
     attr_reader :tokens
 
-    def initialize(string)
-      @dump = string
+    def initialize(source_string)
+      @dump = source_string
       @tokens = []
     end
 
@@ -49,6 +49,10 @@ module MarshalCLI
 
       read_version
       read
+    end
+
+    def source_string
+      @dump
     end
 
     private
@@ -119,6 +123,9 @@ module MarshalCLI
       when 'o'
         @tokens << Token.new(OBJECT_PREFIX, @index-1, 1)
         read_object
+      when '@'
+        @tokens << Token.new(OBJECT_LINK_PREFIX, @index-1, 1)
+        read_integer
       when 'e'
         @tokens << Token.new(OBJECT_EXTENDED_PREFIX, @index-1, 1)
         read_object_extended

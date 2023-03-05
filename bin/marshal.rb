@@ -15,6 +15,9 @@ require 'dry/cli'
 #formatter = MarshalCLI::TokensFormatter::WithDescription.new(lexer.tokens, dump)
 #puts formatter.string
 
+# ruby -Ilib bin/marshal.rb ast --file array.dump --annotate --width=30 --symbols
+# ruby -Ilib bin/marshal.rb ast -f array.dump -a -w 30 -s
+
 module MarshalCLI
   module CLI
     module Commands
@@ -42,9 +45,35 @@ module MarshalCLI
 
       class AST < Dry::CLI::Command
         desc 'Parse a dump and print AST'
+        option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
+        option :symbols,  type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
+        option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print annotations'
+        option :width,    type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
 
         def call(**options)
-          puts "Run ast"
+          dump = options[:file] ? File.read(options[:file]) : STDIN.read
+          lexer = Lexer.new(dump)
+          lexer.run
+
+          parser = Parser.new(lexer)
+          ast = parser.parse
+
+          renderer = \
+            if options[:annotate]
+              width = options[:width] ? Integer(options[:width]) : 50
+              MarshalCLI::Formatters::AST::OnlyTokens::RendererWithAnnotations.new(indent_size: 2, width: width)
+            else
+              MarshalCLI::Formatters::AST::OnlyTokens::Renderer.new(indent_size: 2)
+            end
+          formatter = MarshalCLI::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
+          puts formatter.string
+
+          if options[:symbols]
+            symbols = parser.symbols
+            puts ""
+            puts "Symbols table:"
+            puts MarshalCLI::Formatters::Symbols::Table.new(symbols).string
+          end
         end
       end
 

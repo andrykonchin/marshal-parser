@@ -65,7 +65,7 @@ module MarshalCLI
       when Lexer::SYMBOL_PREFIX
         length = next_token
         content = next_token
-        @symbols << content.value
+        @symbols << @lexer.source_string[content.index, content.length]
 
         SymbolNode.new(token, length, content, @symbols.size-1)
 
@@ -249,15 +249,25 @@ module MarshalCLI
         "Token #{token} should have type #{token_ids.join(' or ')}")
     end
 
+    module Annotatable
+      def annotation
+        raise "Not implemented"
+      end
+    end
+
     class Node
       include Assertable
 
+      def child_entities
+        raise 'Not implemented'
+      end
+
       def tokens
-        []
+        child_entities.grep(Lexer::Token)
       end
 
       def children
-        []
+        child_entities.grep(Node)
       end
 
       def decoded_value
@@ -283,14 +293,8 @@ module MarshalCLI
         @version_token = version_token
       end
 
-      def tokens
+      def child_entities
         [@version_token]
-      end
-    end
-
-    module Annotatable
-      def annotation
-        raise "Not implemented"
       end
     end
 
@@ -304,12 +308,8 @@ module MarshalCLI
         @elements_nodes = elements_nodes
       end
 
-      def tokens
-        [@marker_token, @length_token]
-      end
-
-      def children
-        @elements_nodes
+      def child_entities
+        [@marker_token, @length_token] + @elements_nodes
       end
     end
 
@@ -324,7 +324,7 @@ module MarshalCLI
         @content_token = content_token
       end
 
-      def tokens
+      def child_entities
         [@marker_token, @length_token, @content_token]
       end
 
@@ -346,12 +346,8 @@ module MarshalCLI
         @ivars_nodes = ivars_nodes
       end
 
-      def tokens
-        [@marker_token, @count_token]
-      end
-
-      def children
-        [@child] + @ivars_nodes
+      def child_entities
+        [@marker_token, @child, @count_token] + @ivars_nodes
       end
     end
 
@@ -369,12 +365,12 @@ module MarshalCLI
         @link_to_symbol = link_to_symbol # just Integer, index in the Symbols table
       end
 
-      def tokens
+      def child_entities
         [@marker_token, @length_token, @content_token]
       end
 
       def annotation
-        "symbol ##{@symbol_number}"
+        "symbol ##{@link_to_symbol}"
       end
 
       def literal_token
@@ -388,7 +384,7 @@ module MarshalCLI
         @token = token
       end
 
-      def tokens
+      def child_entities
         [@token]
       end
     end
@@ -399,7 +395,7 @@ module MarshalCLI
         @token = token
       end
 
-      def tokens
+      def child_entities
         [@token]
       end
     end
@@ -410,7 +406,7 @@ module MarshalCLI
         @token = token
       end
 
-      def tokens
+      def child_entities
         [@token]
       end
     end
@@ -424,7 +420,7 @@ module MarshalCLI
         @value = value
       end
 
-      def tokens
+      def child_entities
         [@prefix, @value]
       end
 
@@ -446,7 +442,7 @@ module MarshalCLI
         @value = value
       end
 
-      def tokens
+      def child_entities
         [@prefix, @sign, @length, @value]
       end
 
@@ -466,7 +462,7 @@ module MarshalCLI
         @value = value
       end
 
-      def tokens
+      def child_entities
         [@prefix, @length, @value]
       end
 
@@ -486,7 +482,7 @@ module MarshalCLI
         @index_token = index_token
       end
 
-      def tokens
+      def child_entities
         [@marker_token, @index_token]
       end
 
@@ -509,12 +505,8 @@ module MarshalCLI
         @key_and_value_nodes = key_and_value_nodes
       end
 
-      def tokens
-        [@prefix, @size]
-      end
-
-      def children
-        @key_and_value_nodes
+      def child_entities
+        [@prefix, @size] + @key_and_value_nodes
       end
     end
 
@@ -529,12 +521,8 @@ module MarshalCLI
         @default_value_node = default_value_node
       end
 
-      def tokens
-        [@prefix, @size]
-      end
-
-      def children
-        @key_and_value_nodes + [@default_value_node]
+      def child_entities
+        [@prefix, @size] + @key_and_value_nodes + [@default_value_node]
       end
     end
 
@@ -551,7 +539,7 @@ module MarshalCLI
         @options = options
       end
 
-      def tokens
+      def child_entities
         [@prefix, @string_length, @string, @options]
       end
 
@@ -571,7 +559,7 @@ module MarshalCLI
         @name = name
       end
 
-      def tokens
+      def child_entities
         [@prefix, @length, @name]
       end
 
@@ -591,7 +579,7 @@ module MarshalCLI
         @name = name
       end
 
-      def tokens
+      def child_entities
         [@prefix, @length, @name]
       end
 
@@ -609,12 +597,8 @@ module MarshalCLI
         @object_node = object_node
       end
 
-      def tokens
-        [@prefix]
-      end
-
-      def children
-        [@class_name_node, @object_node]
+      def child_entities
+        [@prefix, @class_name_node, @object_node]
       end
     end
 
@@ -629,12 +613,8 @@ module MarshalCLI
         @member_nodes = member_nodes
       end
 
-      def tokens
-        [@prefix, @member_nodes]
-      end
-
-      def children
-        [@class_name_node] + @member_nodes
+      def child_entities
+        [@prefix, @class_name_node, @members_count] + @member_nodes
       end
     end
 
@@ -649,12 +629,8 @@ module MarshalCLI
         @ivars_nodes = ivars_nodes
       end
 
-      def tokens
-        [@prefix, @class_name_node, @ivars_count]
-      end
-
-      def children
-        [@class_name_node] + @ivars_nodes
+      def child_entities
+        [@prefix, @class_name_node, @ivars_count] + @ivars_nodes
       end
     end
 
@@ -667,7 +643,7 @@ module MarshalCLI
         @index = index
       end
 
-      def tokens
+      def child_entities
         [@prefix, @index]
       end
 
@@ -688,12 +664,8 @@ module MarshalCLI
         @user_dump = user_dump
       end
 
-      def tokens
-        [@prefix, @length, @user_dump]
-      end
-
-      def children
-        [@class_name_node]
+      def child_entities
+        [@prefix, @class_name_node, @length, @user_dump]
       end
 
       def literal_token
@@ -710,12 +682,8 @@ module MarshalCLI
         @child_node = child_node
       end
 
-      def tokens
-        [@prefix]
-      end
-
-      def children
-        [@class_name_node, @child_node]
+      def child_entities
+        [@prefix, @class_name_node, @child_node]
       end
     end
 
@@ -726,24 +694,8 @@ module MarshalCLI
         @object_node = object_node
       end
 
-      def tokens
-        [@prefix]
-      end
-
-      def children
-        [@module_name_node, @object_node]
-      end
-    end
-
-    class SymbolsTable
-      def initialize(symbols)
-        @symbols = symbols
-      end
-
-      def string
-        @symbols.map.with_index do |symbol, i|
-          "%-4d - :%s" % [i, symbol]
-        end.join("\n")
+      def child_entities
+        [@prefix, @module_name_node, @object_node]
       end
     end
   end
