@@ -137,7 +137,7 @@ RSpec.describe MarshalCLI::Parser do
       expect(Marshal.dump(Rational(1, 2))).to eq dump
 
       expect(string_to_ast(dump)).to be_like_ast(
-        Parser::ObjectWithMarshalDump => children_nodes(
+        Parser::ObjectWithMarshalDumpMethod => children_nodes(
           { Parser::SymbolNode => literal_value('Rational', dump) },
           Parser::ArrayNode => children_nodes(
             { Parser::IntegerNode => encoded_value(1) },
@@ -152,7 +152,7 @@ RSpec.describe MarshalCLI::Parser do
       expect(Marshal.dump(Complex(1, 2))).to eq dump
 
       expect(string_to_ast(dump)).to be_like_ast(
-        Parser::ObjectWithMarshalDump => children_nodes(
+        Parser::ObjectWithMarshalDumpMethod => children_nodes(
           { Parser::SymbolNode => literal_value('Complex', dump) },
           Parser::ArrayNode => children_nodes(
             { Parser::IntegerNode => encoded_value(1) },
@@ -285,7 +285,7 @@ RSpec.describe MarshalCLI::Parser do
         expect(string_to_ast(dump)).to be_like_ast(
           Parser::ObjectWithIVarsNode => children_nodes(
             {
-              Parser::ObjectWithDumpNode => [
+              Parser::ObjectWithDumpMethodNode => [
                 children_nodes(
                   Parser::SymbolNode => literal_value('Time', dump)),
                 literal_value("i\xC7\x1E\x80\x00\x00\xE0\xCD", dump),
@@ -309,7 +309,7 @@ RSpec.describe MarshalCLI::Parser do
         expect(string_to_ast(dump)).to be_like_ast(
           Parser::ObjectWithIVarsNode => children_nodes(
             {
-              Parser::ObjectWithDumpNode => [
+              Parser::ObjectWithDumpMethodNode => [
                 children_nodes(
                   Parser::SymbolNode => literal_value('Time', dump)),
                 literal_value("l\xC7\x1E\xC0,\x01\xE0\xCD", dump),
@@ -362,7 +362,7 @@ RSpec.describe MarshalCLI::Parser do
       expect(string_to_ast(dump)).to be_like_ast(
         Parser::ObjectWithIVarsNode => children_nodes(
           {
-            Parser::ObjectWithDumpNode => [
+            Parser::ObjectWithDumpMethodNode => [
               children_nodes(
                 Parser::SymbolNode => literal_value('Encoding', dump)),
               literal_value('UTF-8', dump)
@@ -381,7 +381,7 @@ RSpec.describe MarshalCLI::Parser do
       expect(Marshal.dump(BigDecimal('3.14'))).to eq dump
 
       expect(string_to_ast(dump)).to be_like_ast(
-        Parser::ObjectWithDumpNode => [
+        Parser::ObjectWithDumpMethodNode => [
           children_nodes(
             Parser::SymbolNode => literal_value('BigDecimal', dump)),
           literal_value('18:0.314e1', dump)
@@ -496,7 +496,7 @@ RSpec.describe MarshalCLI::Parser do
         expect(string_to_ast(dump)).to be_like_ast(
           Parser::ObjectWithIVarsNode => children_nodes(
             {
-              Parser::ObjectWithDumpNode => children_nodes(
+              Parser::ObjectWithDumpMethodNode => children_nodes(
                 Parser::SymbolNode => literal_value('UserDefined', dump)
               )
             },
@@ -510,7 +510,7 @@ RSpec.describe MarshalCLI::Parser do
         expect(Marshal.dump(UserMarshal.new(1, 2))).to eq dump
 
         expect(string_to_ast(dump)).to be_like_ast(
-          Parser::ObjectWithMarshalDump => children_nodes(
+          Parser::ObjectWithMarshalDumpMethod => children_nodes(
             { Parser::SymbolNode => literal_value('UserMarshal', dump) },
             Parser::ArrayNode => children_nodes(
               { Parser::IntegerNode => encoded_value(1) },

@@ -209,7 +209,7 @@ module MarshalCLI
         length = next_token
         user_dump = next_token
 
-        ObjectWithDumpNode.new(token, class_name_node, length, user_dump)
+        ObjectWithDumpMethodNode.new(token, class_name_node, length, user_dump)
 
       when Lexer::OBJECT_WITH_MARSHAL_DUMP_PREFIX
         class_name_node = build_ast_node
@@ -217,7 +217,7 @@ module MarshalCLI
 
         child_node = build_ast_node
 
-        ObjectWithMarshalDump.new(token, class_name_node, child_node)
+        ObjectWithMarshalDumpMethod.new(token, class_name_node, child_node)
 
       when Lexer::OBJECT_EXTENDED_PREFIX
         module_name_node = build_ast_node
@@ -278,6 +278,10 @@ module MarshalCLI
         raise 'Not implemented'
       end
 
+      def attributes
+        {}
+      end
+
       private
 
       def assert_token_type(token, *token_ids)
@@ -311,6 +315,12 @@ module MarshalCLI
       def child_entities
         [@marker_token, @length_token] + @elements_nodes
       end
+
+      def attributes
+        {
+          @length_token => { name: :length, value: @length_token.value },
+        }
+      end
     end
 
     class StringNode < Node
@@ -331,6 +341,13 @@ module MarshalCLI
       def literal_token
         @content_token
       end
+
+      def attributes
+        {
+          @length_token => { name: :length, value: @length_token.value },
+          @content_token => { name: :content, value: @content_token }
+        }
+      end
     end
 
     class ObjectWithIVarsNode < Node
@@ -348,6 +365,12 @@ module MarshalCLI
 
       def child_entities
         [@marker_token, @child, @count_token] + @ivars_nodes
+      end
+
+      def attributes
+        {
+          @count_token => { name: :ivars_count, value: @count_token.value },
+        }
       end
     end
 
@@ -375,6 +398,13 @@ module MarshalCLI
 
       def literal_token
         @content_token
+      end
+
+      def attributes
+        {
+          @length_token => { name: :length, value: @length_token.value },
+          @content_token => { name: :content, value: @content_token }
+        }
       end
     end
 
@@ -427,6 +457,12 @@ module MarshalCLI
       def decoded_value
         @value.value
       end
+
+      def attributes
+        {
+          @value => { name: :value, value: @value.value }
+        }
+      end
     end
 
     class BigIntegerNode < Node
@@ -449,6 +485,12 @@ module MarshalCLI
       def decoded_value
         @value.value
       end
+
+      def attributes
+        {
+          @value => { name: :value, value: @value.value }
+        }
+      end
     end
 
     class FloatNode < Node
@@ -468,6 +510,13 @@ module MarshalCLI
 
       def decoded_value
         @value.value
+      end
+
+      def attributes
+        {
+          @length => { name: :length, value: @length.value },
+          @value => { name: :value, value: @value.value }
+        }
       end
     end
 
@@ -493,6 +542,12 @@ module MarshalCLI
       def decoded_value
         @index_token.value
       end
+
+      def attributes
+        {
+          @index_token => { name: :index, value: @index_token.value }
+        }
+      end
     end
 
     class HashNode < Node
@@ -507,6 +562,12 @@ module MarshalCLI
 
       def child_entities
         [@prefix, @size] + @key_and_value_nodes
+      end
+
+      def attributes
+        {
+          @size => { name: :size, value: @size.value }
+        }
       end
     end
 
@@ -523,6 +584,12 @@ module MarshalCLI
 
       def child_entities
         [@prefix, @size] + @key_and_value_nodes + [@default_value_node]
+      end
+
+      def attributes
+        {
+          @size => { name: :size, value: @size.value }
+        }
       end
     end
 
@@ -546,6 +613,14 @@ module MarshalCLI
       def literal_token
         @string
       end
+
+      def attributes
+        {
+          @string_length => { name: :length, value: @string_length.value },
+          @string => { name: :source_string, value: @string },
+          @options => { name: :options, value: @options.value }
+        }
+      end
     end
 
     class ClassNode < Node
@@ -566,6 +641,13 @@ module MarshalCLI
       def literal_token
         @name
       end
+
+      def attributes
+        {
+          @length => { name: :length, value: @length.value },
+          @name => { name: :name, value: @name }
+        }
+      end
     end
 
     class ModuleNode < Node
@@ -585,6 +667,13 @@ module MarshalCLI
 
       def literal_token
         @name
+      end
+
+      def attributes
+        {
+          @length => { name: :length, value: @length.value },
+          @name => { name: :name, value: @name }
+        }
       end
     end
 
@@ -616,6 +705,12 @@ module MarshalCLI
       def child_entities
         [@prefix, @class_name_node, @members_count] + @member_nodes
       end
+
+      def attributes
+        {
+          @members_count => { name: :count, value: @members_count.value }
+        }
+      end
     end
 
     class ObjectNode < Node
@@ -631,6 +726,12 @@ module MarshalCLI
 
       def child_entities
         [@prefix, @class_name_node, @ivars_count] + @ivars_nodes
+      end
+
+      def attributes
+        {
+          @ivars_count => { name: :ivars_count, value: @ivars_count.value }
+        }
       end
     end
 
@@ -650,9 +751,15 @@ module MarshalCLI
       def decoded_value
         @index.value
       end
+
+      def attributes
+        {
+          @index => { name: :index, value: @index.value }
+        }
+      end
     end
 
-    class ObjectWithDumpNode < Node
+    class ObjectWithDumpMethodNode < Node
       def initialize(token, class_name_node, length, user_dump)
         assert_token_type token, Lexer::OBJECT_WITH_DUMP_PREFIX
         assert_token_type length, Lexer::INTEGER
@@ -671,9 +778,16 @@ module MarshalCLI
       def literal_token
         @user_dump
       end
+
+      def attributes
+        {
+          @length => { name: :length, value: @length.value },
+          @user_dump => { name: :dump, value: @user_dump }
+        }
+      end
     end
 
-    class ObjectWithMarshalDump < Node
+    class ObjectWithMarshalDumpMethod < Node
       def initialize(prefix, class_name_node, child_node)
         assert_token_type prefix, Lexer::OBJECT_WITH_MARSHAL_DUMP_PREFIX
 
