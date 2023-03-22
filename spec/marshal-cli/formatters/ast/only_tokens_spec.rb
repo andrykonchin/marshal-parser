@@ -10,7 +10,7 @@ RSpec.describe MarshalCLI::Formatters::AST::OnlyTokens do
       parser = MarshalCLI::Parser.new(lexer)
       ast = parser.parse
 
-      renderer = described_class::Renderer.new(indent_size: 2)
+      renderer = MarshalCLI::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
       formatter = described_class.new(ast, source_string, renderer)
       formatter.string
     end
