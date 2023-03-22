@@ -46,9 +46,10 @@ module MarshalCLI
       class AST < Dry::CLI::Command
         desc 'Parse a dump and print AST'
         option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
-        option :symbols,  type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
+        option :"only-tokens", type: :boolean, aliases: ['-o'], desc: 'Print only tokens'
         option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print annotations'
         option :width,    type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
+        option :symbols,  type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
 
         def call(**options)
           dump = options[:file] ? File.read(options[:file]) : STDIN.read
@@ -61,11 +62,18 @@ module MarshalCLI
           renderer = \
             if options[:annotate]
               width = options[:width] ? Integer(options[:width]) : 50
-              MarshalCLI::Formatters::AST::OnlyTokens::RendererWithAnnotations.new(indent_size: 2, width: width)
+              MarshalCLI::Formatters::AST::Renderers::RendererWithAnnotations.new(indent_size: 2, width: width)
             else
-              MarshalCLI::Formatters::AST::OnlyTokens::Renderer.new(indent_size: 2)
+              MarshalCLI::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
             end
-          formatter = MarshalCLI::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
+
+          formatter = \
+            if options[:"only-tokens"]
+              MarshalCLI::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
+            else
+              MarshalCLI::Formatters::AST::SExpression.new(ast, dump, renderer)
+            end
+
           puts formatter.string
 
           if options[:symbols]
