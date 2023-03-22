@@ -38,8 +38,8 @@ module MarshalCLI
               end
             end.flatten
 
-          title = node.class.name.to_s.split("::").last.sub(/Node\Z/, "").gsub(/([a-z])([A-Z])/, '\1-\2').downcase
-          entries = [Renderers::Line.new("(" + title)] + child_entries
+          name = node_to_name(node)
+          entries = [Renderers::Line.new("(" + name)] + child_entries
           close_bracket(entries.last)
 
           raise "Expected 1st entry to be Line" unless entries[0].is_a?(Renderers::Line)
@@ -55,6 +55,15 @@ module MarshalCLI
           else
             entries
           end
+        end
+
+        # MarshalCLI::Parser::ObjectWithMarshalDumpMethod -> object-with-marshal-dump-method
+        def node_to_name(node)
+          node.class.name.to_s
+            .split("::").last
+            .sub(/Node\Z/, "")
+            .gsub(/([a-z])([A-Z])/, '\1-\2')
+            .downcase
         end
 
         def close_bracket(entry)
