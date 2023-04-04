@@ -17,6 +17,7 @@ require 'dry/cli'
 
 # ruby -Ilib bin/marshal.rb ast --file array.dump --annotate --width=30 --symbols
 # ruby -Ilib bin/marshal.rb ast -f array.dump -a -w 30 -s
+# ruby -Ilib bin/marshal.rb ast -f array.dump -a -w 30 -s -c
 
 module MarshalCLI
   module CLI
@@ -26,10 +27,19 @@ module MarshalCLI
       class Tokens < Dry::CLI::Command
         desc 'Parse a dump and print tokens'
         option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
+        option :evaluate, type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
         option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print a table with annonated tokens'
 
         def call(**options)
-          dump = options[:file] ? File.read(options[:file]) : STDIN.read
+          dump = \
+            if options[:file]
+              File.read(options[:file])
+          elsif options[:evaluate]
+            Marshal.dump(eval(options[:evaluate]))
+          else
+            STDIN.read
+          end
+
           lexer = MarshalCLI::Lexer.new(dump)
           lexer.run
 
@@ -46,6 +56,7 @@ module MarshalCLI
       class AST < Dry::CLI::Command
         desc 'Parse a dump and print AST'
         option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
+        option :evaluate, type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
         option :"only-tokens", type: :boolean, aliases: ['-o'], desc: 'Print only tokens'
         option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print annotations'
         option :width,    type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
@@ -53,7 +64,15 @@ module MarshalCLI
         option :compact, type: :boolean, aliases: ['-c'], desc: "Don't print node attributes"
 
         def call(**options)
-          dump = options[:file] ? File.read(options[:file]) : STDIN.read
+          dump = \
+            if options[:file]
+              File.read(options[:file])
+          elsif options[:evaluate]
+            Marshal.dump(eval(options[:evaluate]))
+          else
+            STDIN.read
+          end
+
           lexer = Lexer.new(dump)
           lexer.run
 
