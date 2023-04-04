@@ -50,6 +50,7 @@ module MarshalCLI
         option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print annotations'
         option :width,    type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
         option :symbols,  type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
+        option :compact, type: :boolean, aliases: ['-c'], desc: "Don't print node attributes"
 
         def call(**options)
           dump = options[:file] ? File.read(options[:file]) : STDIN.read
@@ -70,6 +71,8 @@ module MarshalCLI
           formatter = \
             if options[:"only-tokens"]
               MarshalCLI::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
+            elsif options[:compact]
+              MarshalCLI::Formatters::AST::SExpressionCompact.new(ast, dump, renderer)
             else
               MarshalCLI::Formatters::AST::SExpression.new(ast, dump, renderer)
             end

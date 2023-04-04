@@ -275,11 +275,15 @@ module MarshalCLI
       end
 
       def literal_token
-        raise 'Not implemented'
+        nil
       end
 
       def attributes
         {}
+      end
+
+      def always_leaf?
+        false
       end
 
       private
@@ -417,6 +421,10 @@ module MarshalCLI
       def child_entities
         [@token]
       end
+
+      def always_leaf?
+        true
+      end
     end
 
     class FalseNode < Node
@@ -428,6 +436,10 @@ module MarshalCLI
       def child_entities
         [@token]
       end
+
+      def always_leaf?
+        true
+      end
     end
 
     class NilNode < Node
@@ -438,6 +450,10 @@ module MarshalCLI
 
       def child_entities
         [@token]
+      end
+
+      def always_leaf?
+        true
       end
     end
 
@@ -456,6 +472,10 @@ module MarshalCLI
 
       def decoded_value
         @value.value
+      end
+
+      def literal_token
+        @value
       end
 
       def attributes
@@ -486,6 +506,10 @@ module MarshalCLI
         @value.value
       end
 
+      def literal_token
+        @value
+      end
+
       def attributes
         {
           @value => { name: :value, value: @value.value }
@@ -510,6 +534,10 @@ module MarshalCLI
 
       def decoded_value
         @value.value
+      end
+
+      def literal_token
+        @value
       end
 
       def attributes
@@ -541,6 +569,10 @@ module MarshalCLI
 
       def decoded_value
         @index_token.value
+      end
+
+      def literal_token
+        @index_token
       end
 
       def attributes
@@ -750,6 +782,10 @@ module MarshalCLI
 
       def decoded_value
         @index.value
+      end
+
+      def literal_token
+        @index
       end
 
       def attributes
