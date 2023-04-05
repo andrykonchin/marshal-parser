@@ -55,13 +55,13 @@ module MarshalCLI
 
       class AST < Dry::CLI::Command
         desc 'Parse a dump and print AST'
-        option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
-        option :evaluate, type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
+        option :file,          type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
+        option :evaluate,      type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
         option :"only-tokens", type: :boolean, aliases: ['-o'], desc: 'Print only tokens'
-        option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print annotations'
-        option :width,    type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
-        option :symbols,  type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
-        option :compact, type: :boolean, aliases: ['-c'], desc: "Don't print node attributes"
+        option :annotate,      type: :boolean, aliases: ['-a'], desc: 'Print annotations'
+        option :width,         type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
+        option :symbols,       type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
+        option :compact,       type: :boolean, aliases: ['-c'], desc: "Don't print node attributes"
 
         def call(**options)
           dump = \
