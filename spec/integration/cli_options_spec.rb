@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'tempfile'
 
-RSpec.describe "bin/marshal.rb options" do
+RSpec.describe "bin/marshal-cli options" do
   describe "tokens" do
     it "reads dump from stdin and prints tokens separated with whitespaces" do
-      command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal.rb tokens'
+      command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal-cli tokens'
       expect(`#{command}`.chomp).to eql('"\x04\b" : "\v" symbol')
     end
 
@@ -16,7 +16,7 @@ RSpec.describe "bin/marshal.rb options" do
         file.write(dump)
         file.close
 
-        command = "ruby -Ilib bin/marshal.rb tokens --file #{file.path}"
+        command = "ruby -Ilib bin/marshal-cli tokens --file #{file.path}"
         expect(`#{command}`.chomp).to eql('"\x04\b" : "\v" symbol')
       ensure
         file.unlink
@@ -25,14 +25,14 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--evaluate option" do
       it "executes a Ruby code-snipet and dumps result object with Marshal.dump" do
-        command = 'ruby -Ilib bin/marshal.rb tokens --evaluate ":symbol"'
+        command = 'ruby -Ilib bin/marshal-cli tokens --evaluate ":symbol"'
         expect(`#{command}`.chomp).to eql('"\x04\b" : "\v" symbol')
       end
     end
 
     context "--annotate option" do
       it "prints tokens as a table and provides description for every token" do
-        command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal.rb tokens --annotate'
+        command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal-cli tokens --annotate'
         expect(`#{command}`).to eql(<<~'STR')
           "\x04\b"   - Version (4.8)
           ":"        - Symbol beginning
@@ -44,13 +44,13 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--help" do
       it "prints description and options" do
-        command = 'ruby -Ilib bin/marshal.rb tokens --help'
+        command = 'ruby -Ilib bin/marshal-cli tokens --help'
         expect(`#{command} 2>&1`).to eql(<<~STR)
           Command:
-            marshal.rb tokens
+            marshal-cli tokens
 
           Usage:
-            marshal.rb tokens
+            marshal-cli tokens
 
           Description:
             Parse a dump and print tokens. By default reads dump from the stdin.
@@ -67,7 +67,7 @@ RSpec.describe "bin/marshal.rb options" do
 
   describe "ast" do
     it "prints AST with node attributes as S-expression" do
-      command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal.rb ast'
+      command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal-cli ast'
       expect(`#{command}`).to eql(<<~STR)
         (symbol
           (length 6)
@@ -83,7 +83,7 @@ RSpec.describe "bin/marshal.rb options" do
         file.write(dump)
         file.close
 
-        command = "ruby -Ilib bin/marshal.rb ast --file #{file.path}"
+        command = "ruby -Ilib bin/marshal-cli ast --file #{file.path}"
         expect(`#{command}`).to eql(<<~STR)
           (symbol
             (length 6)
@@ -96,7 +96,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--evaluate option" do
       it "executes a Ruby code-snipet and dumps result object with Marshal.dump" do
-        command = 'ruby -Ilib bin/marshal.rb ast --evaluate ":symbol"'
+        command = 'ruby -Ilib bin/marshal-cli ast --evaluate ":symbol"'
         expect(`#{command}`).to eql(<<~STR)
           (symbol
             (length 6)
@@ -107,7 +107,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--only-tokens" do
       it "prints tokens instead of S-expression" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --only-tokens'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --only-tokens'
         expect(`#{command}`).to eql(<<~'STR')
           [
             "\b"
@@ -118,7 +118,7 @@ RSpec.describe "bin/marshal.rb options" do
       end
 
       it "prints annotation when --annotate option specified" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --only-tokens --annotate'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --only-tokens --annotate'
         expect(`#{command}`).to eql(<<~'STR')
           [
             "\b"
@@ -131,7 +131,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--annotate option" do
       it "prints additional description for some nodes in the right hand side column" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --annotate'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --annotate'
         expect(`#{command}`).to eql(<<~STR)
           (array
             (length 3)
@@ -147,7 +147,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--width" do
       it "prints annotation with specified indentation" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --annotate --width 25'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --annotate --width 25'
         expect(`#{command}`).to eql(<<~STR)
           (array
             (length 3)
@@ -163,7 +163,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--symbols" do
       it "prints a Symbol table afterwards" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --symbols'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --symbols'
         expect(`#{command}`).to eql(<<~STR)
           (array
             (length 3)
@@ -182,7 +182,7 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--compact" do
       it "doesn't print node attributes and additional information" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --compact'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --compact'
         expect(`#{command}`).to eql(<<~STR)
           (array
             (integer 1)
@@ -192,7 +192,7 @@ RSpec.describe "bin/marshal.rb options" do
       end
 
       it "prints annotation when --annotate option specified" do
-        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal.rb ast --compact --annotate'
+        command = 'ruby -e "puts Marshal.dump([1, true, :symbol])" | ruby -Ilib bin/marshal-cli ast --compact --annotate'
         expect(`#{command}`).to eql(<<~STR)
           (array
             (integer 1)
@@ -204,13 +204,13 @@ RSpec.describe "bin/marshal.rb options" do
 
     context "--help" do
       it "prints description and options" do
-        command = 'ruby -Ilib bin/marshal.rb ast --help'
+        command = 'ruby -Ilib bin/marshal-cli ast --help'
         expect(`#{command} 2>&1`).to eql(<<~STR)
           Command:
-            marshal.rb ast
+            marshal-cli ast
 
           Usage:
-            marshal.rb ast
+            marshal-cli ast
 
           Description:
             Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
@@ -231,12 +231,12 @@ RSpec.describe "bin/marshal.rb options" do
 
   describe "--help" do
     it "prints the list of commands" do
-      command = 'ruby -Ilib bin/marshal.rb --help'
+      command = 'ruby -Ilib bin/marshal-cli --help'
       expect(`#{command} 2>&1`).to eql(<<~STR)
         Commands:
-          marshal.rb ast               # Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
-          marshal.rb tokens            # Parse a dump and print tokens. By default reads dump from the stdin.
-          marshal.rb version           # Print version
+          marshal-cli ast               # Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
+          marshal-cli tokens            # Parse a dump and print tokens. By default reads dump from the stdin.
+          marshal-cli version           # Print version
       STR
     end
   end
