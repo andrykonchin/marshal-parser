@@ -14,6 +14,7 @@ require_relative "marshal-cli/formatters/ast/sexpression_compact"
 require_relative "marshal-cli/formatters/symbols/table"
 require_relative "marshal-cli/formatters/tokens/one_line"
 require_relative "marshal-cli/formatters/tokens/with_description"
+require_relative "marshal-cli/cli/commands"
 
 module MarshalCLI
   class Error < StandardError; end
