@@ -1,24 +1,6 @@
 require 'marshal-cli'
 require 'dry/cli'
 
-#dump = "\x04\b[\aI\"\nhello\x06:\x06ETI\"\nworld\x06;\x00T"
-#lexer = MarshalCLI::Lexer.new(dump)
-#lexer.run
-
-#puts "Tokens:"
-#formatter = MarshalCLI::TokensFormatter::OneLine.new(lexer.tokens, dump)
-#puts formatter.string
-
-#puts ""
-
-#puts "Tokens with descriptions:"
-#formatter = MarshalCLI::TokensFormatter::WithDescription.new(lexer.tokens, dump)
-#puts formatter.string
-
-# ruby -Ilib bin/marshal.rb ast --file array.dump --annotate --width=30 --symbols
-# ruby -Ilib bin/marshal.rb ast -f array.dump -a -w 30 -s
-# ruby -Ilib bin/marshal.rb ast -f array.dump -a -w 30 -s -c
-
 module MarshalCLI
   module CLI
     module Commands
