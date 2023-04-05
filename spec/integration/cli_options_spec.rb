@@ -53,7 +53,7 @@ RSpec.describe "bin/marshal.rb options" do
             marshal.rb tokens
 
           Description:
-            Parse a dump and print tokens
+            Parse a dump and print tokens. By default reads dump from the stdin.
 
           Options:
             --file=VALUE, -f VALUE            # Read a dump from file with provided name
@@ -213,7 +213,7 @@ RSpec.describe "bin/marshal.rb options" do
             marshal.rb ast
 
           Description:
-            Parse a dump and print AST
+            Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
 
           Options:
             --file=VALUE, -f VALUE            # Read a dump from file with provided name
@@ -234,8 +234,8 @@ RSpec.describe "bin/marshal.rb options" do
       command = 'ruby -Ilib bin/marshal.rb --help'
       expect(`#{command} 2>&1`).to eql(<<~STR)
         Commands:
-          marshal.rb ast               # Parse a dump and print AST
-          marshal.rb tokens            # Parse a dump and print tokens
+          marshal.rb ast               # Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
+          marshal.rb tokens            # Parse a dump and print tokens. By default reads dump from the stdin.
           marshal.rb version           # Print version
       STR
     end

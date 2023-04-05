@@ -7,7 +7,7 @@ module MarshalCLI
       extend Dry::CLI::Registry
 
       class Tokens < Dry::CLI::Command
-        desc 'Parse a dump and print tokens'
+        desc 'Parse a dump and print tokens. By default reads dump from the stdin.'
         option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
         option :evaluate, type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
         option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print a table with annonated tokens'
@@ -36,7 +36,7 @@ module MarshalCLI
       end
 
       class AST < Dry::CLI::Command
-        desc 'Parse a dump and print AST'
+        desc 'Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.'
         option :file,          type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
         option :evaluate,      type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
         option :"only-tokens", type: :boolean, aliases: ['-o'], desc: 'Print only tokens'
