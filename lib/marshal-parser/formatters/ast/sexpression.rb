@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MarshalParser
   module Formatters
     module AST
@@ -39,7 +41,7 @@ module MarshalParser
             end.flatten
 
           name = node_to_name(node)
-          entries = [Renderers::Line.new("(" + name)] + child_entries
+          entries = [Renderers::Line.new("(#{name}")] + child_entries
           close_bracket(entries.last)
 
           raise "Expected 1st entry to be Line" unless entries[0].is_a?(Renderers::Line)
@@ -51,7 +53,7 @@ module MarshalParser
           end
 
           if entries.size > 1
-            [entries[0], Renderers::EntriesBlock.new(entries[1..-1])]
+            [entries[0], Renderers::EntriesBlock.new(entries[1..])]
           else
             entries
           end
@@ -60,10 +62,10 @@ module MarshalParser
         # MarshalParser::Parser::ObjectWithMarshalDumpMethod -> object-with-marshal-dump-method
         def node_to_name(node)
           node.class.name.to_s
-            .split("::").last
-            .sub(/Node\Z/, "")
-            .gsub(/([a-z])([A-Z])/, '\1-\2')
-            .downcase
+              .split("::").last
+              .sub(/Node\Z/, "")
+              .gsub(/([a-z])([A-Z])/, '\1-\2')
+              .downcase
         end
 
         def close_bracket(entry)
@@ -74,7 +76,6 @@ module MarshalParser
             close_bracket(entry.entries.last)
           end
         end
-
       end
     end
   end

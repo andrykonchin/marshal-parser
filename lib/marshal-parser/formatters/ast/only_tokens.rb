@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MarshalParser
   module Formatters
     module AST
@@ -47,7 +49,7 @@ module MarshalParser
           end
 
           if entries.size > 1
-            [entries[0], Renderers::EntriesBlock.new(entries[1..-1])]
+            [entries[0], Renderers::EntriesBlock.new(entries[1..])]
           else
             entries
           end

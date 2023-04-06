@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HasLiteralValue
   def initialize(expected, source_string)
     @expected = expected
@@ -10,7 +12,7 @@ class HasLiteralValue
     token = actual.literal_token
     value = @source_string[token.index, token.length]
 
-    #puts "#{value.dump} == #{@expected.dump}"
+    # puts "#{value.dump} == #{@expected.dump}"
     value == @expected
   end
 

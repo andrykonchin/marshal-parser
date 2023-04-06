@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MarshalParser
   class Lexer
     # assign values 0, 1, 2, ...
@@ -59,7 +61,7 @@ module MarshalParser
 
     def read_version
       version = @dump[@index, 2]
-      version_unpacked = version.unpack("CC").join('.')
+      version_unpacked = version.unpack("CC").join(".")
       @tokens << Token.new(VERSION, @index, 2, version_unpacked)
       @index += 2
     end
@@ -69,74 +71,74 @@ module MarshalParser
       @index += 1
 
       case c
-      when '['
-        @tokens << Token.new(ARRAY_PREFIX, @index-1, 1)
+      when "["
+        @tokens << Token.new(ARRAY_PREFIX, @index - 1, 1)
         read_array
-      when 'I'
-        @tokens << Token.new(OBJECT_WITH_IVARS_PREFIX, @index-1, 1)
+      when "I"
+        @tokens << Token.new(OBJECT_WITH_IVARS_PREFIX, @index - 1, 1)
         read_object_with_instance_variables
       when '"'
-        @tokens << Token.new(STRING_PREFIX, @index-1, 1)
+        @tokens << Token.new(STRING_PREFIX, @index - 1, 1)
         read_string
-      when '{'
-        @tokens << Token.new(HASH_PREFIX, @index-1, 1)
+      when "{"
+        @tokens << Token.new(HASH_PREFIX, @index - 1, 1)
         read_hash
-      when '}'
-        @tokens << Token.new(HASH_WITH_DEFAULT_VALUE_PREFIX, @index-1, 1)
+      when "}"
+        @tokens << Token.new(HASH_WITH_DEFAULT_VALUE_PREFIX, @index - 1, 1)
         read_hash_with_default_value
-      when '/'
-        @tokens << Token.new(REGEXP_PREFIX, @index-1, 1)
+      when "/"
+        @tokens << Token.new(REGEXP_PREFIX, @index - 1, 1)
         read_regexp
-      when 'S'
-        @tokens << Token.new(STRUCT_PREFIX, @index-1, 1)
+      when "S"
+        @tokens << Token.new(STRUCT_PREFIX, @index - 1, 1)
         read_struct
-      when 'T'
-        @tokens << Token.new(TRUE, @index-1, 1)
-      when 'F'
-        @tokens << Token.new(FALSE, @index-1, 1)
-      when '0'
-        @tokens << Token.new(NIL, @index-1, 1)
-      when ':'
-        @tokens << Token.new(SYMBOL_PREFIX, @index-1, 1)
+      when "T"
+        @tokens << Token.new(TRUE, @index - 1, 1)
+      when "F"
+        @tokens << Token.new(FALSE, @index - 1, 1)
+      when "0"
+        @tokens << Token.new(NIL, @index - 1, 1)
+      when ":"
+        @tokens << Token.new(SYMBOL_PREFIX, @index - 1, 1)
         read_symbol
-      when ';'
-        @tokens << Token.new(SYMBOL_LINK_PREFIX, @index-1, 1)
+      when ";"
+        @tokens << Token.new(SYMBOL_LINK_PREFIX, @index - 1, 1)
         read_symbol_link
-      when 'f'
-        @tokens << Token.new(FLOAT_PREFIX, @index-1, 1)
+      when "f"
+        @tokens << Token.new(FLOAT_PREFIX, @index - 1, 1)
         read_float
-      when 'i'
-        @tokens << Token.new(INTEGER_PREFIX, @index-1, 1)
+      when "i"
+        @tokens << Token.new(INTEGER_PREFIX, @index - 1, 1)
         read_integer
-      when 'l'
-        @tokens << Token.new(BIG_INTEGER_PREFIX, @index-1, 1)
+      when "l"
+        @tokens << Token.new(BIG_INTEGER_PREFIX, @index - 1, 1)
         read_big_integer
-      when 'c'
-        @tokens << Token.new(CLASS_PREFIX, @index-1, 1)
+      when "c"
+        @tokens << Token.new(CLASS_PREFIX, @index - 1, 1)
         read_class
-      when 'm'
-        @tokens << Token.new(MODULE_PREFIX, @index-1, 1)
+      when "m"
+        @tokens << Token.new(MODULE_PREFIX, @index - 1, 1)
         read_module
-      when 'C'
-        @tokens << Token.new(SUBCLASS_OF_CORE_LIBRARY_CLASS_PREFIX, @index-1, 1)
+      when "C"
+        @tokens << Token.new(SUBCLASS_OF_CORE_LIBRARY_CLASS_PREFIX, @index - 1, 1)
         read_object_of_subclass_of_core_library_class
-      when 'o'
-        @tokens << Token.new(OBJECT_PREFIX, @index-1, 1)
+      when "o"
+        @tokens << Token.new(OBJECT_PREFIX, @index - 1, 1)
         read_object
-      when '@'
-        @tokens << Token.new(OBJECT_LINK_PREFIX, @index-1, 1)
+      when "@"
+        @tokens << Token.new(OBJECT_LINK_PREFIX, @index - 1, 1)
         read_integer
-      when 'e'
-        @tokens << Token.new(OBJECT_EXTENDED_PREFIX, @index-1, 1)
+      when "e"
+        @tokens << Token.new(OBJECT_EXTENDED_PREFIX, @index - 1, 1)
         read_object_extended
-      when 'u'
-        @tokens << Token.new(OBJECT_WITH_DUMP_PREFIX, @index-1, 1)
+      when "u"
+        @tokens << Token.new(OBJECT_WITH_DUMP_PREFIX, @index - 1, 1)
         read_object_with_dump
-      when 'U'
-        @tokens << Token.new(OBJECT_WITH_MARSHAL_DUMP_PREFIX, @index-1, 1)
+      when "U"
+        @tokens << Token.new(OBJECT_WITH_MARSHAL_DUMP_PREFIX, @index - 1, 1)
         read_object_with_marshal_dump
       else
-        raise "Unexpected character #{c.dump} (index=#{@index-1})"
+        raise "Unexpected character #{c.dump} (index=#{@index - 1})"
       end
     end
 
@@ -148,7 +150,7 @@ module MarshalParser
     def read_integer
       index_base = @index
 
-      i = @dump[@index].unpack("c")[0]
+      i = @dump[@index].unpack1("c")
       @index += 1
 
       case i

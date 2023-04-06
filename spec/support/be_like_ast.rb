@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BeLikeAST
   def initialize(expected)
     @expected = expected
@@ -18,8 +20,8 @@ class BeLikeAST
   def nodes_match?(actual, expected)
     case expected
     when Class
-      #puts "=== compare #{actual.class} and #{expected}"
-      actual.class == expected
+      # puts "=== compare #{actual.class} and #{expected}"
+      actual.instance_of?(expected)
     when Hash
       key = expected.keys[0]
       value = expected.values[0]

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'tempfile'
+
+require "tempfile"
 
 RSpec.describe "bin/marshal-cli options" do
   describe "tokens" do
@@ -12,7 +13,7 @@ RSpec.describe "bin/marshal-cli options" do
       it "reads dump from file" do
         dump = Marshal.dump(:symbol)
 
-        file = Tempfile.new("marshal-dump", encoding: 'ASCII-8BIT')
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
         file.write(dump)
         file.close
 
@@ -38,13 +39,13 @@ RSpec.describe "bin/marshal-cli options" do
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
           "symbol"   - Symbol characters
-       STR
+        STR
       end
     end
 
     context "--help" do
       it "prints description and options" do
-        command = 'ruby -Ilib bin/marshal-cli tokens --help'
+        command = "ruby -Ilib bin/marshal-cli tokens --help"
         expect(`#{command} 2>&1`).to eql(<<~STR)
           Command:
             marshal-cli tokens
@@ -79,7 +80,7 @@ RSpec.describe "bin/marshal-cli options" do
       it "reads dump from file" do
         dump = Marshal.dump(:symbol)
 
-        file = Tempfile.new("marshal-dump", encoding: 'ASCII-8BIT')
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
         file.write(dump)
         file.close
 
@@ -204,7 +205,7 @@ RSpec.describe "bin/marshal-cli options" do
 
     context "--help" do
       it "prints description and options" do
-        command = 'ruby -Ilib bin/marshal-cli ast --help'
+        command = "ruby -Ilib bin/marshal-cli ast --help"
         expect(`#{command} 2>&1`).to eql(<<~STR)
           Command:
             marshal-cli ast
@@ -231,7 +232,7 @@ RSpec.describe "bin/marshal-cli options" do
 
   describe "--help" do
     it "prints the list of commands" do
-      command = 'ruby -Ilib bin/marshal-cli --help'
+      command = "ruby -Ilib bin/marshal-cli --help"
       expect(`#{command} 2>&1`).to eql(<<~STR)
         Commands:
           marshal-cli ast               # Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.

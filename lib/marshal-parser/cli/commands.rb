@@ -1,4 +1,6 @@
-require 'dry/cli'
+# frozen_string_literal: true
+
+require "dry/cli"
 
 module MarshalParser
   module CLI
@@ -6,20 +8,20 @@ module MarshalParser
       extend Dry::CLI::Registry
 
       class Tokens < Dry::CLI::Command
-        desc 'Parse a dump and print tokens. By default reads dump from the stdin.'
-        option :file,     type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
-        option :evaluate, type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
-        option :annotate, type: :boolean, aliases: ['-a'], desc: 'Print a table with annonated tokens'
+        desc "Parse a dump and print tokens. By default reads dump from the stdin."
+        option :file,     type: :string,  aliases: ["-f"], desc: "Read a dump from file with provided name"
+        option :evaluate, type: :string,  aliases: ["-e"], desc: "Ruby expression to dump"
+        option :annotate, type: :boolean, aliases: ["-a"], desc: "Print a table with annonated tokens"
 
         def call(**options)
           dump = \
             if options[:file]
               File.read(options[:file])
-          elsif options[:evaluate]
-            Marshal.dump(eval(options[:evaluate]))
-          else
-            STDIN.read
-          end
+            elsif options[:evaluate]
+              Marshal.dump(eval(options[:evaluate]))
+            else
+              $stdin.read
+            end
 
           lexer = MarshalParser::Lexer.new(dump)
           lexer.run
@@ -35,24 +37,25 @@ module MarshalParser
       end
 
       class AST < Dry::CLI::Command
-        desc 'Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.'
-        option :file,          type: :string,  aliases: ['-f'], desc: 'Read a dump from file with provided name'
-        option :evaluate,      type: :string,  aliases: ['-e'], desc: 'Ruby expression to dump'
-        option :"only-tokens", type: :boolean, aliases: ['-o'], desc: 'Print only tokens'
-        option :annotate,      type: :boolean, aliases: ['-a'], desc: 'Print annotations'
-        option :width,         type: :string,  aliases: ['-w'], desc: 'Width of the column with AST, used with --annotate'
-        option :symbols,       type: :boolean, aliases: ['-s'], desc: 'Print a table of symbols'
-        option :compact,       type: :boolean, aliases: ['-c'], desc: "Don't print node attributes"
+        desc "Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format."
+        option :file,          type: :string,  aliases: ["-f"], desc: "Read a dump from file with provided name"
+        option :evaluate,      type: :string,  aliases: ["-e"], desc: "Ruby expression to dump"
+        option :"only-tokens", type: :boolean, aliases: ["-o"], desc: "Print only tokens"
+        option :annotate,      type: :boolean, aliases: ["-a"], desc: "Print annotations"
+        option :width,         type: :string,  aliases: ["-w"],
+                               desc: "Width of the column with AST, used with --annotate"
+        option :symbols,       type: :boolean, aliases: ["-s"], desc: "Print a table of symbols"
+        option :compact,       type: :boolean, aliases: ["-c"], desc: "Don't print node attributes"
 
         def call(**options)
           dump = \
             if options[:file]
               File.read(options[:file])
-          elsif options[:evaluate]
-            Marshal.dump(eval(options[:evaluate]))
-          else
-            STDIN.read
-          end
+            elsif options[:evaluate]
+              Marshal.dump(eval(options[:evaluate]))
+            else
+              $stdin.read
+            end
 
           lexer = Lexer.new(dump)
           lexer.run
@@ -96,9 +99,9 @@ module MarshalParser
         end
       end
 
-      register 'tokens',  Tokens,   aliases: ['t']
-      register 'ast',     AST,      aliases: ['a']
-      register 'version', Version,  aliases: ['v', '-v', '--version']
+      register "tokens",  Tokens,   aliases: ["t"]
+      register "ast",     AST,      aliases: ["a"]
+      register "version", Version,  aliases: ["v", "-v", "--version"]
     end
   end
 end

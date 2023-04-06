@@ -1,5 +1,7 @@
-require_relative 'lexer'
-require_relative 'assertable'
+# frozen_string_literal: true
+
+require_relative "lexer"
+require_relative "assertable"
 
 module MarshalParser
   class Parser
@@ -15,8 +17,7 @@ module MarshalParser
 
     def parse
       version_node = build_ast_node
-      root_node = build_ast_node
-      root_node
+      build_ast_node
     end
 
     private
@@ -67,7 +68,7 @@ module MarshalParser
         content = next_token
         @symbols << @lexer.source_string[content.index, content.length]
 
-        SymbolNode.new(token, length, content, @symbols.size-1)
+        SymbolNode.new(token, length, content, @symbols.size - 1)
 
       when Lexer::TRUE
         TrueNode.new(token)
@@ -234,19 +235,21 @@ module MarshalParser
       raise "No next token" if @index >= @lexer.tokens.size
 
       @index += 1
-      @lexer.tokens[@index-1]
+      @lexer.tokens[@index - 1]
     end
 
     def assert_node_type(node, *allowed_classes)
       assert(
         allowed_classes.any? { |node_class| node_class === node },
-        "Node #{node} should be a #{allowed_classes.map(&:name).join(' or ')}")
+        "Node #{node} should be a #{allowed_classes.map(&:name).join(" or ")}"
+      )
     end
 
     def assert_token_type(token, *token_ids)
       assert(
         token_ids.include?(token.id),
-        "Token #{token} should have type #{token_ids.join(' or ')}")
+        "Token #{token} should have type #{token_ids.join(" or ")}"
+      )
     end
 
     module Annotatable
@@ -259,7 +262,7 @@ module MarshalParser
       include Assertable
 
       def child_entities
-        raise 'Not implemented'
+        raise "Not implemented"
       end
 
       def tokens
@@ -291,7 +294,8 @@ module MarshalParser
       def assert_token_type(token, *token_ids)
         assert(
           token_ids.include?(token.id),
-          "Token #{token} should have type #{token_ids.join(' or ')}")
+          "Token #{token} should have type #{token_ids.join(" or ")}"
+        )
       end
     end
 
@@ -322,7 +326,7 @@ module MarshalParser
 
       def attributes
         {
-          @length_token => { name: :length, value: @length_token.value },
+          @length_token => { name: :length, value: @length_token.value }
         }
       end
     end
@@ -373,7 +377,7 @@ module MarshalParser
 
       def attributes
         {
-          @count_token => { name: :ivars_count, value: @count_token.value },
+          @count_token => { name: :ivars_count, value: @count_token.value }
         }
       end
     end

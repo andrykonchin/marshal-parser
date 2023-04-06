@@ -1,4 +1,6 @@
-require_relative 'be_like_ast'
+# frozen_string_literal: true
+
+require_relative "be_like_ast"
 
 class HasChildrenNodes
   def initialize(expected)

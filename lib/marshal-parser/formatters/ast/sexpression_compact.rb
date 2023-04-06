@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MarshalParser
   module Formatters
     module AST
@@ -40,15 +42,13 @@ module MarshalParser
           name = node_to_name(node)
           entries = [Renderers::Line.new(name)] + child_entries
 
-          if node.literal_token
-            if entries.size == 2 && entries.all?(Renderers::Line)
-              strings = entries.map(&:string)
-              entries = [Renderers::Line.new(strings.join(' '))]
-            end
+          if node.literal_token && (entries.size == 2 && entries.all?(Renderers::Line))
+            strings = entries.map(&:string)
+            entries = [Renderers::Line.new(strings.join(" "))]
           end
 
           unless node.always_leaf?
-            entries[0] = Renderers::Line.new("(" + entries[0].string)
+            entries[0] = Renderers::Line.new("(#{entries[0].string}")
             close_bracket(entries.last)
           end
 
@@ -61,7 +61,7 @@ module MarshalParser
           end
 
           if entries.size > 1
-            [entries[0], Renderers::EntriesBlock.new(entries[1..-1])]
+            [entries[0], Renderers::EntriesBlock.new(entries[1..])]
           else
             entries
           end
@@ -70,10 +70,10 @@ module MarshalParser
         # MarshalParser::Parser::ObjectWithMarshalDumpMethod -> object-with-marshal-dump-method
         def node_to_name(node)
           node.class.name.to_s
-            .split("::").last
-            .sub(/Node\Z/, "")
-            .gsub(/([a-z])([A-Z])/, '\1-\2')
-            .downcase
+              .split("::").last
+              .sub(/Node\Z/, "")
+              .gsub(/([a-z])([A-Z])/, '\1-\2')
+              .downcase
         end
 
         def close_bracket(entry)
@@ -84,7 +84,6 @@ module MarshalParser
             close_bracket(entry.entries.last)
           end
         end
-
       end
     end
   end

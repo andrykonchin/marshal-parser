@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ArraySubclass < Array
 end
 
@@ -21,17 +23,19 @@ class UserDefined
   end
 
   def initialize(a, b)
-    @a, @b = a, b
+    @a = a
+    @b = b
   end
 
-  def _dump(level)
+  def _dump(_level)
     "#{@a}:#{@b}"
   end
 end
 
 class UserMarshal
   def initialize(a, b)
-    @a, @b = a, b
+    @a = a
+    @b = b
   end
 
   def marshal_dump
