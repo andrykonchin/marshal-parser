@@ -1,4 +1,4 @@
-module MarshalCLI
+module MarshalParser
   module Formatters
     module Tokens
       class OneLine

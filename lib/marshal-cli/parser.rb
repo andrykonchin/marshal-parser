@@ -1,7 +1,7 @@
 require_relative 'lexer'
 require_relative 'assertable'
 
-module MarshalCLI
+module MarshalParser
   class Parser
     include Assertable
 

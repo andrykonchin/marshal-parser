@@ -1,4 +1,4 @@
-module MarshalCLI
+module MarshalParser
   class Lexer
     # assign values 0, 1, 2, ...
     VERSION,

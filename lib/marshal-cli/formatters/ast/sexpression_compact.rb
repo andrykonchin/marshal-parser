@@ -1,4 +1,4 @@
-module MarshalCLI
+module MarshalParser
   module Formatters
     module AST
       class SExpressionCompact
@@ -67,7 +67,7 @@ module MarshalCLI
           end
         end
 
-        # MarshalCLI::Parser::ObjectWithMarshalDumpMethod -> object-with-marshal-dump-method
+        # MarshalParser::Parser::ObjectWithMarshalDumpMethod -> object-with-marshal-dump-method
         def node_to_name(node)
           node.class.name.to_s
             .split("::").last

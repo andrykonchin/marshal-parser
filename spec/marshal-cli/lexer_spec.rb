@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe MarshalCLI::Lexer do
+RSpec.describe MarshalParser::Lexer do
   describe '#tokens' do
     Lexer = described_class
 
     def string_to_tokens(string)
-      lexer = MarshalCLI::Lexer.new(string)
+      lexer = MarshalParser::Lexer.new(string)
       lexer.run
       lexer.tokens
     end

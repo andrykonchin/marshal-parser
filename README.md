@@ -144,9 +144,9 @@ pp lexer.tokens
 
 This will output:
 
-    [#<struct MarshalCLI::Lexer::Token id=0, index=0, length=2, value="4.8">,
-     #<struct MarshalCLI::Lexer::Token id=14, index=2, length=1, value=nil>,
-     #<struct MarshalCLI::Lexer::Token id=25, index=3, length=1, value=1>]
+    [#<struct MarshalParser::Lexer::Token id=0, index=0, length=2, value="4.8">,
+     #<struct MarshalParser::Lexer::Token id=14, index=2, length=1, value=nil>,
+     #<struct MarshalParser::Lexer::Token id=25, index=3, length=1, value=1>]
 
 Use `MarshalParser::Parser` class to get the AST:
 
@@ -165,9 +165,9 @@ puts ast
 
 This will output:
 
-    #<MarshalCLI::Parser::IntegerNode:0x000000010daba4d8
-     @prefix=#<struct MarshalCLI::Lexer::Token id=14, index=2, length=1, value=nil>,
-     @value=#<struct MarshalCLI::Lexer::Token id=25, index=3, length=1, value=1>>
+    #<MarshalParser::Parser::IntegerNode:0x000000010daba4d8
+     @prefix=#<struct MarshalParser::Lexer::Token id=14, index=2, length=1, value=nil>,
+     @value=#<struct MarshalParser::Lexer::Token id=25, index=3, length=1, value=1>>
 
 ## Limitations
 

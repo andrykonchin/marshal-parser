@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in marshal-cli.gemspec
+# Specify your gem's dependencies in marshal-parser.gemspec
 gemspec
 
 gem "pry"

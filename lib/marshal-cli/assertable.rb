@@ -1,4 +1,4 @@
-module MarshalCLI
+module MarshalParser
   module Assertable
     def assert(boolean, message)
       raise "Assert failed: #{message}" unless boolean

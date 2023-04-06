@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/marshal-cli/version"
+require_relative "lib/marshal-parser/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "marshal-cli"
-  spec.version = MarshalCLI::VERSION
+  spec.name = "marshal-parser"
+  spec.version = MarshalParser::VERSION
   spec.authors = ["Andrew Konchin"]
   spec.email = ["andry.konchin@gmail.com"]
 

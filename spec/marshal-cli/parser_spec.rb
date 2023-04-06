@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe MarshalCLI::Parser do
+RSpec.describe MarshalParser::Parser do
   describe '#parse' do
     Parser = described_class
 
     def string_to_ast(string)
-      lexer = MarshalCLI::Lexer.new(string)
+      lexer = MarshalParser::Lexer.new(string)
       lexer.run
-      parser = MarshalCLI::Parser.new(lexer)
+      parser = MarshalParser::Parser.new(lexer)
       parser.parse
     end
 

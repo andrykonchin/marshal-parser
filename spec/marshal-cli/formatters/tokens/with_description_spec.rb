@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'bigdecimal'
 
-RSpec.describe MarshalCLI::Formatters::Tokens::WithDescription do
+RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
   describe '#string' do
     def formatted_output(string)
-      lexer = MarshalCLI::Lexer.new(string)
+      lexer = MarshalParser::Lexer.new(string)
       lexer.run
       tokens = lexer.tokens
 

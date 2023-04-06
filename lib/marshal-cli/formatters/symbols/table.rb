@@ -1,4 +1,4 @@
-module MarshalCLI
+module MarshalParser
   module Formatters
     module Symbols
       class Table

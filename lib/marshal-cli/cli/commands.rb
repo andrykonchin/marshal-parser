@@ -1,6 +1,6 @@
 require 'dry/cli'
 
-module MarshalCLI
+module MarshalParser
   module CLI
     module Commands
       extend Dry::CLI::Registry
@@ -21,13 +21,13 @@ module MarshalCLI
             STDIN.read
           end
 
-          lexer = MarshalCLI::Lexer.new(dump)
+          lexer = MarshalParser::Lexer.new(dump)
           lexer.run
 
           if options[:annotate]
-            formatter = MarshalCLI::Formatters::Tokens::WithDescription.new(lexer.tokens, dump)
+            formatter = MarshalParser::Formatters::Tokens::WithDescription.new(lexer.tokens, dump)
           else
-            formatter = MarshalCLI::Formatters::Tokens::OneLine.new(lexer.tokens, dump)
+            formatter = MarshalParser::Formatters::Tokens::OneLine.new(lexer.tokens, dump)
           end
 
           puts formatter.string
@@ -63,18 +63,18 @@ module MarshalCLI
           renderer = \
             if options[:annotate]
               width = options[:width] ? Integer(options[:width]) : 50
-              MarshalCLI::Formatters::AST::Renderers::RendererWithAnnotations.new(indent_size: 2, width: width)
+              MarshalParser::Formatters::AST::Renderers::RendererWithAnnotations.new(indent_size: 2, width: width)
             else
-              MarshalCLI::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
+              MarshalParser::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
             end
 
           formatter = \
             if options[:"only-tokens"]
-              MarshalCLI::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
+              MarshalParser::Formatters::AST::OnlyTokens.new(ast, dump, renderer)
             elsif options[:compact]
-              MarshalCLI::Formatters::AST::SExpressionCompact.new(ast, dump, renderer)
+              MarshalParser::Formatters::AST::SExpressionCompact.new(ast, dump, renderer)
             else
-              MarshalCLI::Formatters::AST::SExpression.new(ast, dump, renderer)
+              MarshalParser::Formatters::AST::SExpression.new(ast, dump, renderer)
             end
 
           puts formatter.string
@@ -83,7 +83,7 @@ module MarshalCLI
             symbols = parser.symbols
             puts ""
             puts "Symbols table:"
-            puts MarshalCLI::Formatters::Symbols::Table.new(symbols).string
+            puts MarshalParser::Formatters::Symbols::Table.new(symbols).string
           end
         end
       end
@@ -92,7 +92,7 @@ module MarshalCLI
         desc "Print version"
 
         def call(**)
-          puts MarshalCLI::VERSION
+          puts MarshalParser::VERSION
         end
       end
 

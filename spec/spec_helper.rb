@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "marshal-cli"
+require "marshal-parser"
 require_relative "support/fixtures"
 require_relative "support/be_like_ast"
 require_relative "support/has_children_nodes"

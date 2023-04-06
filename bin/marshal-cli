@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "marshal-cli"
+require "marshal-parser"
 
-Dry::CLI.new(MarshalCLI::CLI::Commands).call
+Dry::CLI.new(MarshalParser::CLI::Commands).call

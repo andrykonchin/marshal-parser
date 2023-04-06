@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 require 'bigdecimal'
 
-RSpec.describe MarshalCLI::Formatters::AST::OnlyTokens do
+RSpec.describe MarshalParser::Formatters::AST::OnlyTokens do
   describe '#string' do
     def formatted_output(source_string)
-      lexer = MarshalCLI::Lexer.new(source_string)
+      lexer = MarshalParser::Lexer.new(source_string)
       lexer.run
 
-      parser = MarshalCLI::Parser.new(lexer)
+      parser = MarshalParser::Parser.new(lexer)
       ast = parser.parse
 
-      renderer = MarshalCLI::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
+      renderer = MarshalParser::Formatters::AST::Renderers::Renderer.new(indent_size: 2)
       formatter = described_class.new(ast, source_string, renderer)
       formatter.string
     end
