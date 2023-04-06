@@ -240,7 +240,7 @@ module MarshalParser
 
     def assert_node_type(node, *allowed_classes)
       assert(
-        allowed_classes.any? { |node_class| node_class === node },
+        allowed_classes.any? { |node_class| node.instance_of?(node_class) },
         "Node #{node} should be a #{allowed_classes.map(&:name).join(" or ")}"
       )
     end
@@ -301,6 +301,7 @@ module MarshalParser
 
     class VersionNode < Node
       def initialize(version_token)
+        super()
         assert_token_type version_token, Lexer::VERSION
         @version_token = version_token
       end
@@ -312,6 +313,7 @@ module MarshalParser
 
     class ArrayNode < Node
       def initialize(marker_token, length_token, elements_nodes)
+        super()
         assert_token_type marker_token, Lexer::ARRAY_PREFIX
         assert_token_type length_token, Lexer::INTEGER
 
@@ -333,6 +335,7 @@ module MarshalParser
 
     class StringNode < Node
       def initialize(marker_token, length_token, content_token)
+        super()
         assert_token_type marker_token, Lexer::STRING_PREFIX
         assert_token_type length_token, Lexer::INTEGER
         assert_token_type content_token, Lexer::STRING
@@ -360,6 +363,7 @@ module MarshalParser
 
     class ObjectWithIVarsNode < Node
       def initialize(marker_token, child, count_token, ivars_nodes)
+        super()
         assert_token_type marker_token, Lexer::OBJECT_WITH_IVARS_PREFIX
         # child - any Node
         assert_token_type count_token, Lexer::INTEGER
@@ -386,6 +390,7 @@ module MarshalParser
       include Annotatable
 
       def initialize(marker_token, length_token, content_token, link_to_symbol)
+        super()
         assert_token_type marker_token, Lexer::SYMBOL_PREFIX
         assert_token_type length_token, Lexer::INTEGER
         assert_token_type content_token, Lexer::SYMBOL
@@ -418,6 +423,7 @@ module MarshalParser
 
     class TrueNode < Node
       def initialize(token)
+        super()
         assert_token_type(token, Lexer::TRUE)
         @token = token
       end
@@ -433,6 +439,7 @@ module MarshalParser
 
     class FalseNode < Node
       def initialize(token)
+        super()
         assert_token_type token, Lexer::FALSE
         @token = token
       end
@@ -448,6 +455,7 @@ module MarshalParser
 
     class NilNode < Node
       def initialize(token)
+        super()
         assert_token_type token, Lexer::NIL
         @token = token
       end
@@ -463,6 +471,7 @@ module MarshalParser
 
     class IntegerNode < Node
       def initialize(prefix, value)
+        super()
         assert_token_type prefix, Lexer::INTEGER_PREFIX
         assert_token_type value, Lexer::INTEGER
 
@@ -491,6 +500,7 @@ module MarshalParser
 
     class BigIntegerNode < Node
       def initialize(prefix, sign, length, value)
+        super()
         assert_token_type prefix, Lexer::BIG_INTEGER_PREFIX
         assert_token_type sign, Lexer::PLUS_SIGN, Lexer::MINUS_SIGN
         assert_token_type length, Lexer::INTEGER
@@ -523,6 +533,7 @@ module MarshalParser
 
     class FloatNode < Node
       def initialize(prefix, length, value)
+        super()
         assert_token_type prefix, Lexer::FLOAT_PREFIX
         assert_token_type length, Lexer::INTEGER
         assert_token_type value, Lexer::FLOAT
@@ -556,6 +567,7 @@ module MarshalParser
       include Annotatable
 
       def initialize(marker_token, index_token)
+        super()
         assert_token_type marker_token, Lexer::SYMBOL_LINK_PREFIX
         assert_token_type index_token, Lexer::INTEGER
 
@@ -588,6 +600,7 @@ module MarshalParser
 
     class HashNode < Node
       def initialize(prefix, size, key_and_value_nodes)
+        super()
         assert_token_type prefix, Lexer::HASH_PREFIX
         assert_token_type size, Lexer::INTEGER
 
@@ -609,6 +622,7 @@ module MarshalParser
 
     class HashWithDefaultValueNode < Node
       def initialize(prefix, size, key_and_value_nodes, default_value_node)
+        super()
         assert_token_type prefix, Lexer::HASH_WITH_DEFAULT_VALUE_PREFIX
         assert_token_type size, Lexer::INTEGER
 
@@ -631,6 +645,7 @@ module MarshalParser
 
     class RegexpNode < Node
       def initialize(prefix, string_length, string, options)
+        super()
         assert_token_type prefix, Lexer::REGEXP_PREFIX
         assert_token_type string_length, Lexer::INTEGER
         assert_token_type string, Lexer::STRING
@@ -661,6 +676,7 @@ module MarshalParser
 
     class ClassNode < Node
       def initialize(prefix, length, name)
+        super()
         assert_token_type prefix, Lexer::CLASS_PREFIX
         assert_token_type length, Lexer::INTEGER
         assert_token_type name, Lexer::STRING
@@ -688,6 +704,7 @@ module MarshalParser
 
     class ModuleNode < Node
       def initialize(prefix, length, name)
+        super()
         assert_token_type prefix, Lexer::MODULE_PREFIX
         assert_token_type length, Lexer::INTEGER
         assert_token_type name, Lexer::STRING
@@ -715,6 +732,7 @@ module MarshalParser
 
     class SubclassNode < Node
       def initialize(prefix, class_name_node, object_node)
+        super()
         assert_token_type prefix, Lexer::SUBCLASS_OF_CORE_LIBRARY_CLASS_PREFIX
 
         @prefix = prefix
@@ -729,6 +747,7 @@ module MarshalParser
 
     class StructNode < Node
       def initialize(prefix, class_name_node, members_count, member_nodes)
+        super()
         assert_token_type prefix, Lexer::STRUCT_PREFIX
         assert_token_type members_count, Lexer::INTEGER
 
@@ -751,6 +770,7 @@ module MarshalParser
 
     class ObjectNode < Node
       def initialize(prefix, class_name_node, ivars_count, ivars_nodes)
+        super()
         assert_token_type prefix, Lexer::OBJECT_PREFIX
         assert_token_type ivars_count, Lexer::INTEGER
 
@@ -773,6 +793,7 @@ module MarshalParser
 
     class ObjectLinkNode < Node
       def initialize(prefix, index)
+        super()
         assert_token_type prefix, Lexer::OBJECT_LINK_PREFIX
         assert_token_type index, Lexer::INTEGER
 
@@ -801,6 +822,7 @@ module MarshalParser
 
     class ObjectWithDumpMethodNode < Node
       def initialize(token, class_name_node, length, user_dump)
+        super()
         assert_token_type token, Lexer::OBJECT_WITH_DUMP_PREFIX
         assert_token_type length, Lexer::INTEGER
         assert_token_type user_dump, Lexer::STRING
@@ -829,6 +851,7 @@ module MarshalParser
 
     class ObjectWithMarshalDumpMethod < Node
       def initialize(prefix, class_name_node, child_node)
+        super()
         assert_token_type prefix, Lexer::OBJECT_WITH_MARSHAL_DUMP_PREFIX
 
         @prefix = prefix
@@ -843,6 +866,7 @@ module MarshalParser
 
     class ObjectExtendedNode < Node
       def initialize(prefix, module_name_node, object_node)
+        super()
         @prefix = prefix
         @module_name_node = module_name_node
         @object_node = object_node

@@ -181,7 +181,7 @@ module MarshalParser
         value = @dump[@index, 4].bytes.reverse.reduce { |acc, byte| (acc << 8) + byte } - 0xFF_FF_FF_FF - 1
         @index += 4
       else
-        value = (i > 0) ? i - 5 : i + 5
+        value = i > 0 ? i - 5 : i + 5
       end
 
       @tokens << Token.new(INTEGER, index_base, @index - index_base, value)
@@ -203,14 +203,15 @@ module MarshalParser
     def read_sign
       c = @dump[@index]
 
-      case c
-      when '+'
-        token = Token.new(PLUS_SIGN, @index, 1)
-      when '-'
-        token = Token.new(MINUS_SIGN, @index, 1)
-      else
-        token = Token.new(UNKNOWN_SIGN, @index, 1)
-      end
+      token = \
+        case c
+        when "+"
+          Token.new(PLUS_SIGN, @index, 1)
+        when "-"
+          Token.new(MINUS_SIGN, @index, 1)
+        else
+          Token.new(UNKNOWN_SIGN, @index, 1)
+        end
 
       @tokens << token
       @index += 1

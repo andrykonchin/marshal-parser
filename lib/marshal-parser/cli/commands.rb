@@ -26,11 +26,12 @@ module MarshalParser
           lexer = MarshalParser::Lexer.new(dump)
           lexer.run
 
-          if options[:annotate]
-            formatter = MarshalParser::Formatters::Tokens::WithDescription.new(lexer.tokens, dump)
-          else
-            formatter = MarshalParser::Formatters::Tokens::OneLine.new(lexer.tokens, dump)
-          end
+          formatter = \
+            if options[:annotate]
+              MarshalParser::Formatters::Tokens::WithDescription.new(lexer.tokens, dump)
+            else
+              MarshalParser::Formatters::Tokens::OneLine.new(lexer.tokens, dump)
+            end
 
           puts formatter.string
         end
