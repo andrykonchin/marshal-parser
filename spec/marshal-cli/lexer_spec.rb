@@ -431,7 +431,7 @@ RSpec.describe MarshalParser::Lexer do
       it "returns tokens for dumped Time" do
         dump = "\x04\bIu:\tTime\ri\xC7\x1E\x80\x00\x00\xE0\xCD\a:\voffseti\x020*:\tzone0"
 
-        time = Time.new(2023, 2, 27, 12, 51, 30, "+0300")
+        time = Time.new(2023, 2, 27, 12, 51, 30, "+03:00")
         expect(Marshal.dump(time)).to eq dump.b
 
         expect(string_to_tokens(dump)).to eq [
