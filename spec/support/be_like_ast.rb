@@ -20,7 +20,6 @@ class BeLikeAST
   def nodes_match?(actual, expected)
     case expected
     when Class
-      # puts "=== compare #{actual.class} and #{expected}"
       actual.instance_of?(expected)
     when Hash
       key = expected.keys[0]

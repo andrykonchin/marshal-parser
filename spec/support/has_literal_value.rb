@@ -12,7 +12,6 @@ class HasLiteralValue
     token = actual.literal_token
     value = @source_string[token.index, token.length]
 
-    # puts "#{value.dump} == #{@expected.dump}"
     value == @expected
   end
 
