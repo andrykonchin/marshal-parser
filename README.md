@@ -31,7 +31,7 @@ Ruby object.
 
 The Marshal format is described here <https://ruby-doc.org/core-3.1.0/doc/marshal_rdoc.html>.
 
-There are also a lot of useful articles, for instance:
+There are also a lot of articles that could be useful, for instance:
 - <https://shopify.engineering/caching-without-marshal-part-one>
 - <https://iliabylich.github.io/2016/01/25/ruby-marshalling-from-a-to-z.html>
 - <http://jakegoulding.com/blog/categories/marshal/>
@@ -160,7 +160,7 @@ lexer.run
 parser = MarshalParser::Parser.new(lexer)
 ast = parser.parse
 
-puts ast
+pp ast
 ```
 
 This will output:
@@ -171,11 +171,11 @@ This will output:
 
 ## Limitations
 
-- Only supports current format version 4.8
-- Does not support a deprecated node 'M' (that represents Class or Module)
+- Supports only the current Marshal format version (4.8)
+- Does not support a deprecated node 'M' (that represents 'Class or Module')
 - Does not support a 'd' node (Data object, that represents wrapped pointers from Ruby extensions)
 - Doesn't print in annotations object indices (because Ruby is not consistent here and object indices assigning order may
-vary depending on dumped class)
+vary depending on a class of a dumped object)
 
 ## Similar projects
 
