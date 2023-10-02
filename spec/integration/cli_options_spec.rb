@@ -60,6 +60,7 @@ RSpec.describe "bin/marshal-cli options" do
             --file=VALUE, -f VALUE            # Read a dump from file with provided name
             --evaluate=VALUE, -e VALUE        # Ruby expression to dump
             --[no-]annotate, -a               # Print a table with annonated tokens
+            --[no-]hex, -x                    # Print tokens in a hexadecimal encoding
             --help, -h                        # Print this help
         STR
       end

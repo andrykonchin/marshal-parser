@@ -12,6 +12,7 @@ module MarshalParser
         option :file,     type: :string,  aliases: ["-f"], desc: "Read a dump from file with provided name"
         option :evaluate, type: :string,  aliases: ["-e"], desc: "Ruby expression to dump"
         option :annotate, type: :boolean, aliases: ["-a"], desc: "Print a table with annonated tokens"
+        option :hex,      type: :boolean, aliases: ["-x"], desc: "Print tokens in a hexadecimal encoding"
 
         def call(**options)
           dump = \
@@ -28,9 +29,9 @@ module MarshalParser
 
           formatter = \
             if options[:annotate]
-              MarshalParser::Formatters::Tokens::WithDescription.new(lexer.tokens, dump)
+              MarshalParser::Formatters::Tokens::WithDescription.new(lexer.tokens, dump, hex: options[:hex])
             else
-              MarshalParser::Formatters::Tokens::OneLine.new(lexer.tokens, dump)
+              MarshalParser::Formatters::Tokens::OneLine.new(lexer.tokens, dump, hex: options[:hex])
             end
 
           puts formatter.string

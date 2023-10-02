@@ -4,12 +4,12 @@ require "bigdecimal"
 
 RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
   describe "#string" do
-    def formatted_output(string)
+    def formatted_output(string, **options)
       lexer = MarshalParser::Lexer.new(string)
       lexer.run
       tokens = lexer.tokens
 
-      formatter = described_class.new(tokens, string)
+      formatter = described_class.new(tokens, string, **options)
       formatter.string
     end
 
@@ -728,6 +728,27 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
           "\v"       - Integer encoded (6)
           "Object"   - Symbol characters
           "\x00"     - Integer encoded (0)
+        STR
+      end
+    end
+
+    describe "with option --hex" do
+      it "returns token content in a hexadecimal format" do
+        dump = "\x04\bf\t3.14"
+        expect(Marshal.dump(3.14)).to eq dump
+
+        expect(formatted_output(dump, hex: false)).to eq <<~'STR'.b.chomp
+          "\x04\b"   - Version (4.8)
+          "f"        - Float beginning
+          "\t"       - Integer encoded (4)
+          "3.14"     - Float string representation (3.14)
+        STR
+
+        expect(formatted_output(dump, hex: true)).to eq <<~'STR'.b.chomp
+          04 08      - Version (4.8)
+          66         - Float beginning
+          09         - Integer encoded (4)
+          33 2E 31 34 - Float string representation (3.14)
         STR
       end
     end

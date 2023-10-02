@@ -4,19 +4,29 @@ module MarshalParser
   module Formatters
     module Tokens
       class WithDescription
-        def initialize(tokens, source_string)
+        def initialize(tokens, source_string, hex: nil)
           @tokens = tokens
           @source_string = source_string
+          @hex = hex
         end
 
         def string
           @tokens.map do |token|
-            string = @source_string[token.index, token.length].dump
+            string = token_to_string(token)
             description = self.class.token_description(token.id)
             value = token.value ? " (#{token.value})" : ""
 
             "%-10s - %s%s" % [string, description, value]
           end.join("\n")
+        end
+
+        private def token_to_string(token)
+          unless @hex
+            @source_string[token.index, token.length].dump
+          else
+            string = @source_string[token.index, token.length]
+            string.bytes.map { |b| "%02X" % b }.join(" ")
+          end
         end
 
         def self.token_description(token)
