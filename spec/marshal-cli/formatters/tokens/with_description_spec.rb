@@ -321,7 +321,7 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
         STR
       end
 
-      it "returns tokens for dumped Hash with default value" do
+      it "returns tokens for dumped Hash with Integer default value" do
         dump = "\x04\b}\x00i/"
 
         hash = Hash.new(42)
@@ -333,6 +333,22 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
           "\x00"     - Integer encoded (0)
           "i"        - Integer beginning
           "/"        - Integer encoded (42)
+        STR
+      end
+
+      it "returns tokens for dumped Hash with non-Integer as default value" do
+        dump = "\x04\b}\x00:\vfoobar"
+
+        hash = Hash.new(:foobar)
+        expect(Marshal.dump(hash)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          "\x04\b"   - Version (4.8)
+          "}"        - Hash beginning (with defaul value)
+          "\x00"     - Integer encoded (0)
+          ":"        - Symbol beginning
+          "\v"       - Integer encoded (6)
+          "foobar"   - Symbol characters
         STR
       end
 

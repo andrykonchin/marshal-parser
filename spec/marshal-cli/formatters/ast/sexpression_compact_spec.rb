@@ -253,7 +253,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpressionCompact do
         STR
       end
 
-      it "returns tokens for dumped Hash with default value" do
+      it "returns tokens for dumped Hash with Integer default value" do
         dump = "\x04\b}\x00i/"
 
         hash = Hash.new(42)
@@ -262,6 +262,18 @@ RSpec.describe MarshalParser::Formatters::AST::SExpressionCompact do
         expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
           (hash-with-default-value
             (integer 42))
+        STR
+      end
+
+      it "returns tokens for dumped Hash with non-Integer as default value" do
+        dump = "\x04\b}\x00:\vfoobar"
+
+        hash = Hash.new(:foobar)
+        expect(Marshal.dump(hash)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          (hash-with-default-value
+            (symbol "foobar"))
         STR
       end
 

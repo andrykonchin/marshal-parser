@@ -130,7 +130,6 @@ module MarshalParser
         end
 
         default_value_node = build_ast_node
-        assert_node_type default_value_node, IntegerNode
 
         HashWithDefaultValueNode.new(token, size, key_and_value_nodes, default_value_node)
 
