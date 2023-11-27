@@ -28,7 +28,7 @@ module MarshalParser
           when Lexer::OBJECT_WITH_MARSHAL_DUMP_PREFIX   then "Object with #marshal_dump and #marshal_load"
           when Lexer::STRING_PREFIX                     then "String beginning"
           when Lexer::HASH_PREFIX                       then "Hash beginning"
-          when Lexer::HASH_WITH_DEFAULT_VALUE_PREFIX    then "Hash beginning (with defaul value)"
+          when Lexer::HASH_WITH_DEFAULT_VALUE_PREFIX    then "Hash beginning (with default value)"
           when Lexer::REGEXP_PREFIX                     then "Regexp beginning"
           when Lexer::STRUCT_PREFIX                     then "Struct beginning"
           when Lexer::TRUE                              then "true"

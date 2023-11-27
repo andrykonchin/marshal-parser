@@ -329,7 +329,7 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
 
         expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
           "\x04\b"   - Version (4.8)
-          "}"        - Hash beginning (with defaul value)
+          "}"        - Hash beginning (with default value)
           "\x00"     - Integer encoded (0)
           "i"        - Integer beginning
           "/"        - Integer encoded (42)
@@ -344,7 +344,7 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
 
         expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
           "\x04\b"   - Version (4.8)
-          "}"        - Hash beginning (with defaul value)
+          "}"        - Hash beginning (with default value)
           "\x00"     - Integer encoded (0)
           ":"        - Symbol beginning
           "\v"       - Integer encoded (6)
