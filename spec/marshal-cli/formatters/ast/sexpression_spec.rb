@@ -296,7 +296,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         STR
       end
 
-      it "returns tokens for dumped Hash with default value" do
+      it "returns tokens for dumped Hash with Integer as default value" do
         dump = "\x04\b}\x00i/"
 
         hash = Hash.new(42)
@@ -310,7 +310,22 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         STR
       end
 
-      it "returns tokens for dumped Hash with compare-by-identity behabiour" do
+      it "returns tokens for dumped Hash with non-Integer as default value" do
+        dump = "\x04\b}\x00:\vfoobar"
+
+        hash = Hash.new(:foobar)
+        expect(Marshal.dump(hash)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          (hash-with-default-value
+            (size 0)
+            (symbol
+              (length 6)
+              (content "foobar")))
+        STR
+      end
+
+      it "returns tokens for dumped Hash with compare-by-identity behaviour" do
         dump = "\x04\bC:\tHash{\x00"
 
         hash = {}

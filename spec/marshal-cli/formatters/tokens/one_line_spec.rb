@@ -184,7 +184,7 @@ RSpec.describe MarshalParser::Formatters::Tokens::OneLine do
         expect(formatted_output(dump)).to eq '"\x04\b" { "\x06" : "\x06" a i "\x00"'
       end
 
-      it "returns tokens for dumped Hash with default value" do
+      it "returns tokens for dumped Hash with Integer default value" do
         dump = "\x04\b}\x00i/"
 
         hash = Hash.new(42)
@@ -193,7 +193,16 @@ RSpec.describe MarshalParser::Formatters::Tokens::OneLine do
         expect(formatted_output(dump)).to eq '"\x04\b" } "\x00" i /'.b
       end
 
-      it "returns tokens for dumped Hash with compare-by-identity behabiour" do
+      it "returns tokens for dumped Hash with non-Integer as default value" do
+        dump = "\x04\b}\x00:\vfoobar"
+
+        hash = Hash.new(:foobar)
+        expect(Marshal.dump(hash)).to eq dump
+
+        expect(formatted_output(dump)).to eq '"\x04\b" } "\x00" : "\v" foobar'.b
+      end
+
+      it "returns tokens for dumped Hash with compare-by-identity behaviour" do
         dump = "\x04\bC:\tHash{\x00"
 
         hash = {}

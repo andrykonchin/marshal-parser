@@ -235,7 +235,7 @@ RSpec.describe MarshalParser::Parser do
         )
       end
 
-      it "returns AST for dumped Hash with compare-by-identity behabiour" do
+      it "returns AST for dumped Hash with compare-by-identity behaviour" do
         dump = "\x04\bC:\tHash{\x00"
 
         hash = {}
