@@ -220,11 +220,20 @@ RSpec.describe MarshalParser::Formatters::Tokens::OneLine do
       expect(formatted_output(dump)).to eq '"\x04\b" o : "\n" Range "\b" : "\t" excl F : "\n" begin i "\x00" : "\b" end i /'.b
     end
 
-    it "returns tokens for dumped Regexp" do
-      dump = "\x04\bI/\babc\x00\x06:\x06EF"
-      expect(Marshal.dump(/abc/)).to eq dump
+    describe 'Regexp' do
+      it "returns tokens for dumped Regexp" do
+        dump = "\x04\bI/\babc\x00\x06:\x06EF"
+        expect(Marshal.dump(/abc/)).to eq dump
 
-      expect(formatted_output(dump)).to eq '"\x04\b" I / "\b" abc "\x00" "\x06" : "\x06" E F'.b
+        expect(formatted_output(dump)).to eq '"\x04\b" I / "\b" abc "\x00" "\x06" : "\x06" E F'.b
+      end
+
+      it "returns tokens for dumped Regexp with options" do
+        dump = "\x04\bI/\babc\x01\x06:\x06EF"
+        expect(Marshal.dump(/abc/i)).to eq dump
+
+        expect(formatted_output(dump)).to eq '"\x04\b" I / "\b" abc "\x01" "\x06" : "\x06" E F'.b
+      end
     end
 
     describe "Time" do

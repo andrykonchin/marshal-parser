@@ -58,6 +58,7 @@ module MarshalParser
           when Lexer::FLOAT                             then "Float string representation"
           when Lexer::INTEGER                           then "Integer encoded"
           when Lexer::BIG_INTEGER                       then "Big Integer encoded"
+          when Lexer::BYTE                              then "Byte"
           when Lexer::STRING                            then "String characters"
           when Lexer::SYMBOL                            then "Symbol characters"
           when Lexer::PLUS_SIGN                         then "Sign '+'"

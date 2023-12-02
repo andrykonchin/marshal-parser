@@ -399,23 +399,44 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
       STR
     end
 
-    it "returns tokens for dumped Regexp" do
-      dump = "\x04\bI/\babc\x00\x06:\x06EF"
-      expect(Marshal.dump(/abc/)).to eq dump
+    describe 'Regexp' do
+      it "returns tokens for dumped Regexp" do
+        dump = "\x04\bI/\babc\x00\x06:\x06EF"
+        expect(Marshal.dump(/abc/)).to eq dump
 
-      expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
-        "\x04\b"   - Version (4.8)
-        "I"        - Special object with instance variables
-        "/"        - Regexp beginning
-        "\b"       - Integer encoded (3)
-        "abc"      - String characters
-        "\x00"     - Integer encoded (0)
-        "\x06"     - Integer encoded (1)
-        ":"        - Symbol beginning
-        "\x06"     - Integer encoded (1)
-        "E"        - Symbol characters
-        "F"        - false
-      STR
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          "\x04\b"   - Version (4.8)
+          "I"        - Special object with instance variables
+          "/"        - Regexp beginning
+          "\b"       - Integer encoded (3)
+          "abc"      - String characters
+          "\x00"     - Byte (0)
+          "\x06"     - Integer encoded (1)
+          ":"        - Symbol beginning
+          "\x06"     - Integer encoded (1)
+          "E"        - Symbol characters
+          "F"        - false
+        STR
+      end
+
+      it "returns tokens for dumped Regexp with options" do
+        dump = "\x04\bI/\babc\x01\x06:\x06EF"
+        expect(Marshal.dump(/abc/i)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          "\x04\b"   - Version (4.8)
+          "I"        - Special object with instance variables
+          "/"        - Regexp beginning
+          "\b"       - Integer encoded (3)
+          "abc"      - String characters
+          "\x01"     - Byte (1)
+          "\x06"     - Integer encoded (1)
+          ":"        - Symbol beginning
+          "\x06"     - Integer encoded (1)
+          "E"        - Symbol characters
+          "F"        - false
+        STR
+      end
     end
 
     describe "Time" do
@@ -619,7 +640,7 @@ RSpec.describe MarshalParser::Formatters::Tokens::WithDescription do
           "/"        - Regexp beginning
           "\b"       - Integer encoded (3)
           "abc"      - String characters
-          "\x00"     - Integer encoded (0)
+          "\x00"     - Byte (0)
           "\x06"     - Integer encoded (1)
           ":"        - Symbol beginning
           "\x06"     - Integer encoded (1)

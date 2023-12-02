@@ -317,17 +317,32 @@ RSpec.describe MarshalParser::Formatters::AST::OnlyTokens do
       STR
     end
 
-    it "returns tokens for dumped Regexp" do
-      dump = "\x04\bI/\babc\x00\x06:\x06EF"
-      expect(Marshal.dump(/abc/)).to eq dump
+    describe 'Regexp' do
+      it "returns tokens for dumped Regexp" do
+        dump = "\x04\bI/\babc\x00\x06:\x06EF"
+        expect(Marshal.dump(/abc/)).to eq dump
 
-      expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
-        I
-          / "\b" abc "\x00"
-          "\x06"
-          : "\x06" E                   # symbol #0
-          F
-      STR
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          I
+            / "\b" abc "\x00"
+            "\x06"
+            : "\x06" E                   # symbol #0
+            F
+        STR
+      end
+
+      it "returns tokens for dumped Regexp with options" do
+        dump = "\x04\bI/\babc\x01\x06:\x06EF"
+        expect(Marshal.dump(/abc/i)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          I
+            / "\b" abc "\x01"
+            "\x06"
+            : "\x06" E                   # symbol #0
+            F
+        STR
+      end
     end
 
     describe "Time" do
