@@ -417,7 +417,7 @@ RSpec.describe MarshalParser::Lexer do
         Lexer::Token.new(Lexer::REGEXP_PREFIX, 3, 1),
         Lexer::Token.new(Lexer::INTEGER, 4, 1, 3),
         Lexer::Token.new(Lexer::STRING, 5, 3),
-        Lexer::Token.new(Lexer::INTEGER, 8, 1, 0),
+        Lexer::Token.new(Lexer::BYTE, 8, 1, 0),
         Lexer::Token.new(Lexer::INTEGER, 9, 1, 1),
 
         Lexer::Token.new(Lexer::SYMBOL_PREFIX, 10, 1),
@@ -643,7 +643,7 @@ RSpec.describe MarshalParser::Lexer do
           Lexer::Token.new(Lexer::REGEXP_PREFIX, 20, 1),
           Lexer::Token.new(Lexer::INTEGER, 21, 1, 3),
           Lexer::Token.new(Lexer::STRING, 22, 3),
-          Lexer::Token.new(Lexer::INTEGER, 25, 1, 0),
+          Lexer::Token.new(Lexer::BYTE, 25, 1, 0),
           Lexer::Token.new(Lexer::INTEGER, 26, 1, 1),
 
           Lexer::Token.new(Lexer::SYMBOL_PREFIX, 27, 1),

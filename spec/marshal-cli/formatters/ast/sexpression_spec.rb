@@ -370,22 +370,42 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
       STR
     end
 
-    it "returns tokens for dumped Regexp" do
-      dump = "\x04\bI/\babc\x00\x06:\x06EF"
-      expect(Marshal.dump(/abc/)).to eq dump
+    describe 'Regexp' do
+      it "returns tokens for dumped Regexp" do
+        dump = "\x04\bI/\babc\x00\x06:\x06EF"
+        expect(Marshal.dump(/abc/)).to eq dump
 
-      expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
-        (object-with-ivars
-          (regexp
-            (length 3)
-            (source-string "abc")
-            (options 0))
-          (ivars-count 1)
-          (symbol
-            (length 1)
-            (content "E"))
-          (false))
-      STR
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          (object-with-ivars
+            (regexp
+              (length 3)
+              (source-string "abc")
+              (options 0))
+            (ivars-count 1)
+            (symbol
+              (length 1)
+              (content "E"))
+            (false))
+        STR
+      end
+
+      it "returns tokens for dumped Regexp with options" do
+        dump = "\x04\bI/\babc\x01\x06:\x06EF"
+        expect(Marshal.dump(/abc/i)).to eq dump
+
+        expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
+          (object-with-ivars
+            (regexp
+              (length 3)
+              (source-string "abc")
+              (options 1))
+            (ivars-count 1)
+            (symbol
+              (length 1)
+              (content "E"))
+            (false))
+        STR
+      end
     end
 
     describe "Time" do

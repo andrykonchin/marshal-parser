@@ -648,7 +648,7 @@ module MarshalParser
         assert_token_type prefix, Lexer::REGEXP_PREFIX
         assert_token_type string_length, Lexer::INTEGER
         assert_token_type string, Lexer::STRING
-        assert_token_type options, Lexer::INTEGER
+        assert_token_type options, Lexer::BYTE
 
         @prefix = prefix
         @string_length = string_length

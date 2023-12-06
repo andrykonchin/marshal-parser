@@ -30,6 +30,7 @@ module MarshalParser
       FLOAT,
       INTEGER,
       BIG_INTEGER,
+      BYTE,
       STRING,
       SYMBOL,
       PLUS_SIGN,
@@ -145,6 +146,12 @@ module MarshalParser
     def read_array
       count = read_integer
       elements = (1..count).map { read }
+    end
+
+    def read_byte
+      value = @dump[@index].ord
+      @index += 1
+      @tokens << Token.new(BYTE, @index - 1, 1, value)
     end
 
     def read_integer
@@ -266,7 +273,7 @@ module MarshalParser
 
     def read_regexp
       read_string # read Regexp's source
-      read_integer # read flags
+      read_byte # read flags
     end
 
     def read_struct
