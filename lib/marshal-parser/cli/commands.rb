@@ -11,10 +11,15 @@ module MarshalParser
         desc "Parse a dump and print tokens. By default reads dump from the stdin."
         option :file,     type: :string,  aliases: ["-f"], desc: "Read a dump from file with provided name"
         option :evaluate, type: :string,  aliases: ["-e"], desc: "Ruby expression to dump"
+        option :require,  type: :string,  aliases: ["-r"], desc: "Load the library using require. It is useful when -e is specified"
         option :annotate, type: :boolean, aliases: ["-a"], desc: "Print a table with annonated tokens"
         option :hex,      type: :boolean, aliases: ["-x"], desc: "Print tokens in a hexadecimal encoding"
 
         def call(**options)
+          if options[:require]
+            require options[:require]
+          end
+
           dump = \
             if options[:file]
               File.read(options[:file])
@@ -42,6 +47,7 @@ module MarshalParser
         desc "Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format."
         option :file,          type: :string,  aliases: ["-f"], desc: "Read a dump from file with provided name"
         option :evaluate,      type: :string,  aliases: ["-e"], desc: "Ruby expression to dump"
+        option :require,       type: :string,  aliases: ["-r"], desc: "Load the library using require. It is useful when -e is specified"
         option :"only-tokens", type: :boolean, aliases: ["-o"], desc: "Print only tokens"
         option :annotate,      type: :boolean, aliases: ["-a"], desc: "Print annotations"
         option :width,         type: :string,  aliases: ["-w"],
@@ -50,6 +56,10 @@ module MarshalParser
         option :compact,       type: :boolean, aliases: ["-c"], desc: "Don't print node attributes"
 
         def call(**options)
+          if options[:require]
+            require options[:require]
+          end
+
           dump = \
             if options[:file]
               File.read(options[:file])
