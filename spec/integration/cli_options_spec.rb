@@ -31,6 +31,27 @@ RSpec.describe "bin/marshal-cli options" do
       end
     end
 
+    context "--require option" do
+      it "requires a specified source file" do
+        path = "./spec/integration/fixtures/a.rb"
+
+        command = "ruby -Ilib bin/marshal-cli tokens --require #{path} --evaluate ':symbol'"
+        expect(`#{command}`).to eql(<<~'EOF'.b)
+          Hello from a.rb
+          "\x04\b" : "\v" symbol
+        EOF
+      end
+
+      it "requires a specified file before evaluating code snippet when --evaluate option provided" do
+        path = "./spec/integration/fixtures/b.rb"
+
+        command = "ruby -Ilib bin/marshal-cli tokens --require #{path} --evaluate SYMBOL"
+        expect(`#{command}`).to eql(<<~'EOF'.b)
+          "\x04\b" : "\v" symbol
+        EOF
+      end
+    end
+
     context "--annotate option" do
       it "prints tokens as a table and provides description for every token" do
         command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal-cli tokens --annotate'
@@ -59,6 +80,7 @@ RSpec.describe "bin/marshal-cli options" do
           Options:
             --file=VALUE, -f VALUE            # Read a dump from file with provided name
             --evaluate=VALUE, -e VALUE        # Ruby expression to dump
+            --require=VALUE, -r VALUE         # Load the library using require. It is useful when -e is specified
             --[no-]annotate, -a               # Print a table with annonated tokens
             --[no-]hex, -x                    # Print tokens in a hexadecimal encoding
             --help, -h                        # Print this help
@@ -104,6 +126,31 @@ RSpec.describe "bin/marshal-cli options" do
             (length 6)
             (content "symbol"))
         STR
+      end
+    end
+
+    context "--require option" do
+      it "requires a specified source file" do
+        path = "./spec/integration/fixtures/a.rb"
+
+        command = "ruby -Ilib bin/marshal-cli ast --require #{path} --evaluate ':symbol'"
+        expect(`#{command}`).to eql(<<~EOF)
+          Hello from a.rb
+          (symbol
+            (length 6)
+            (content "symbol"))
+        EOF
+      end
+
+      it "requires a specified file before evaluating code snippet when --evaluate option provided" do
+        path = "./spec/integration/fixtures/b.rb"
+
+        command = "ruby -Ilib bin/marshal-cli ast --require #{path} --evaluate SYMBOL"
+        expect(`#{command}`).to eql(<<~EOF)
+          (symbol
+            (length 6)
+            (content "symbol"))
+        EOF
       end
     end
 
@@ -220,6 +267,7 @@ RSpec.describe "bin/marshal-cli options" do
           Options:
             --file=VALUE, -f VALUE            # Read a dump from file with provided name
             --evaluate=VALUE, -e VALUE        # Ruby expression to dump
+            --require=VALUE, -r VALUE         # Load the library using require. It is useful when -e is specified
             --[no-]only-tokens, -o            # Print only tokens
             --[no-]annotate, -a               # Print annotations
             --width=VALUE, -w VALUE           # Width of the column with AST, used with --annotate
