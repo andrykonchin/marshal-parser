@@ -64,6 +64,15 @@ RSpec.describe "bin/marshal-cli options" do
       end
     end
 
+    context "--hex option" do
+      it "prints tokens in a hexadecimal encoding" do
+        command = 'ruby -e "puts Marshal.dump(:symbol)" | ruby -Ilib bin/marshal-cli tokens --hex'
+        expect(`#{command}`).to eql(<<~'STR')
+          04 08  3A  0B  73 79 6D 62 6F 6C
+        STR
+      end
+    end
+
     context "--help" do
       it "prints description and options" do
         command = "ruby -Ilib bin/marshal-cli tokens --help"
