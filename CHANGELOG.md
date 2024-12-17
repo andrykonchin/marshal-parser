@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## Fixed
+
+- Fixed reading dump from file (with `--file` option) and from stdin and
+  enforced String binary encoding
+
 ## [0.2.0] - 2023-12-20
 
 ### Added

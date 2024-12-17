@@ -87,6 +87,73 @@ RSpec.describe "bin/marshal-cli options" do
         STR
       end
     end
+
+    context "when --file option specified and binary content is invalid in the default encoding (UTF-8)" do
+      it "emits proper output with default formatter" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli tokens --file #{file.path}"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          "\x04\b" I u : "\t" Time "\r" "5.\x1F\x80\x00\x00\x00\xEC" "\a" : "\v" offset i "\x00" : "\t" zone 0
+        STR
+      ensure
+        file.unlink
+      end
+
+      it "emits proper output with --annotate option" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli tokens --file #{file.path} --annotate"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          "\x04\b"   - Version (4.8)
+          "I"        - Special object with instance variables
+          "u"        - Object with #_dump and .load
+          ":"        - Symbol beginning
+          "\t"       - Integer encoded (4)
+          "Time"     - Symbol characters
+          "\r"       - Integer encoded (8)
+          "5.\x1F\x80\x00\x00\x00\xEC" - String characters
+          "\a"       - Integer encoded (2)
+          ":"        - Symbol beginning
+          "\v"       - Integer encoded (6)
+          "offset"   - Symbol characters
+          "i"        - Integer beginning
+          "\x00"     - Integer encoded (0)
+          ":"        - Symbol beginning
+          "\t"       - Integer encoded (4)
+          "zone"     - Symbol characters
+          "0"        - nil
+        STR
+      ensure
+        file.unlink
+      end
+
+      it "emits proper output with --hex option" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli tokens --file #{file.path} --hex"
+        expect(`#{command}`.chomp).to eql(<<~STR.chomp)
+          04 08  49  75  3A  09  54 69 6D 65  0D  35 2E 1F 80 00 00 00 EC  07  3A  0B  6F 66 66 73 65 74  69  00  3A  09  7A 6F 6E 65  30
+        STR
+      ensure
+        file.unlink
+      end
+    end
   end
 
   describe "ast" do
@@ -277,12 +344,120 @@ RSpec.describe "bin/marshal-cli options" do
         STR
       end
     end
+
+    context "when --file option specified and binary content is invalid in the default encoding (UTF-8)" do
+      it "emits proper output with default formatter" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli ast --file #{file.path}"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          (object-with-ivars
+            (object-with-dump-method
+              (symbol
+                (length 4)
+                (content "Time"))
+              (length 8)
+              (dump "5.\x1F\x80\x00\x00\x00\xEC"))
+            (ivars-count 2)
+            (symbol
+              (length 6)
+              (content "offset"))
+            (integer
+              (value 0))
+            (symbol
+              (length 4)
+              (content "zone"))
+            (nil))
+        STR
+      ensure
+        file.unlink
+      end
+
+      it "emits proper output with --only-tokens" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli ast --file #{file.path} --only-tokens"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          I
+            u
+              : "\t" Time
+              "\r"
+              "5.\x1F\x80\x00\x00\x00\xEC"
+            "\a"
+            : "\v" offset
+            i "\x00"
+            : "\t" zone
+            0
+        STR
+      end
+
+      it "emits proper output with --annotate" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli ast --file #{file.path} --annotate"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          (object-with-ivars
+            (object-with-dump-method
+              (symbol                                        # symbol #0
+                (length 4)
+                (content "Time"))
+              (length 8)
+              (dump "5.\x1F\x80\x00\x00\x00\xEC"))
+            (ivars-count 2)
+            (symbol                                          # symbol #1
+              (length 6)
+              (content "offset"))
+            (integer
+              (value 0))
+            (symbol                                          # symbol #2
+              (length 4)
+              (content "zone"))
+            (nil))
+        STR
+      end
+
+      it "emits proper output with --compact" do
+        time = Time.new(2024, 12, 17, 21, 59, 0, "+00:00")
+        dump = Marshal.dump(time)
+
+        file = Tempfile.new("marshal-dump", encoding: "ASCII-8BIT")
+        file.write(dump)
+        file.close
+
+        command = "ruby -Ilib bin/marshal-cli ast --file #{file.path} --compact"
+        expect(`#{command}`.chomp).to eql(<<~'STR'.chomp)
+          (object-with-ivars
+            (object-with-dump-method
+              (symbol "Time")
+              "5.\x1F\x80\x00\x00\x00\xEC")
+            (symbol "offset")
+            (integer 0)
+            (symbol "zone")
+            nil)
+        STR
+      end
+    end
   end
 
   describe "--help" do
     it "prints the list of commands" do
       command = "ruby -Ilib bin/marshal-cli --help"
-      expect(`#{command} 2>&1`).to eql(<<~STR)
+      expect(`#{command} 2>&1`.chomp.chomp).to eql(<<~STR.chomp)
         Commands:
           marshal-cli ast               # Parse a dump and print AST. By default reads dump from the stdin and uses S-expressions format.
           marshal-cli tokens            # Parse a dump and print tokens. By default reads dump from the stdin.

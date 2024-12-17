@@ -22,11 +22,11 @@ module MarshalParser
 
           dump = \
             if options[:file]
-              File.read(options[:file])
+              File.read(options[:file]).b
             elsif options[:evaluate]
               Marshal.dump(eval(options[:evaluate]))
             else
-              $stdin.read
+              $stdin.read.b
             end
 
           lexer = MarshalParser::Lexer.new(dump)
@@ -62,11 +62,11 @@ module MarshalParser
 
           dump = \
             if options[:file]
-              File.read(options[:file])
+              File.read(options[:file]).b
             elsif options[:evaluate]
               Marshal.dump(eval(options[:evaluate]))
             else
-              $stdin.read
+              $stdin.read.b
             end
 
           lexer = Lexer.new(dump)
