@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## Changed
+
+- Changed output format of the `ast` command and renamed `content` and
+  `dump` nodes to `bytes`.
+- Change a symbols table formatting and adjust the indices column width
+  to the maximum index width
+
 ## Fixed
 
 - Fixed reading dump from file (with `--file` option) and from stdin and

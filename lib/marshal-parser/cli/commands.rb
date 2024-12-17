@@ -97,7 +97,7 @@ module MarshalParser
           if options[:symbols]
             symbols = parser.symbols
             puts ""
-            puts "Symbols table:"
+            puts "Symbols table [#{symbols.size}]:"
             puts MarshalParser::Formatters::Symbols::Table.new(symbols).string
           end
         end

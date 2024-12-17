@@ -171,7 +171,7 @@ RSpec.describe "bin/marshal-cli options" do
       expect(`#{command}`).to eql(<<~STR)
         (symbol
           (length 6)
-          (content "symbol"))
+          (bytes "symbol"))
       STR
     end
 
@@ -187,7 +187,7 @@ RSpec.describe "bin/marshal-cli options" do
         expect(`#{command}`).to eql(<<~STR)
           (symbol
             (length 6)
-            (content "symbol"))
+            (bytes "symbol"))
         STR
       ensure
         file.unlink
@@ -200,7 +200,7 @@ RSpec.describe "bin/marshal-cli options" do
         expect(`#{command}`).to eql(<<~STR)
           (symbol
             (length 6)
-            (content "symbol"))
+            (bytes "symbol"))
         STR
       end
     end
@@ -214,7 +214,7 @@ RSpec.describe "bin/marshal-cli options" do
           Hello from a.rb
           (symbol
             (length 6)
-            (content "symbol"))
+            (bytes "symbol"))
         EOF
       end
 
@@ -225,7 +225,7 @@ RSpec.describe "bin/marshal-cli options" do
         expect(`#{command}`).to eql(<<~EOF)
           (symbol
             (length 6)
-            (content "symbol"))
+            (bytes "symbol"))
         EOF
       end
     end
@@ -265,7 +265,7 @@ RSpec.describe "bin/marshal-cli options" do
             (true)
             (symbol                                          # symbol #0
               (length 6)
-              (content "symbol")))
+              (bytes "symbol")))
         STR
       end
     end
@@ -281,7 +281,7 @@ RSpec.describe "bin/marshal-cli options" do
             (true)
             (symbol                 # symbol #0
               (length 6)
-              (content "symbol")))
+              (bytes "symbol")))
         STR
       end
     end
@@ -297,10 +297,10 @@ RSpec.describe "bin/marshal-cli options" do
             (true)
             (symbol
               (length 6)
-              (content "symbol")))
+              (bytes "symbol")))
 
-          Symbols table:
-          0    - :symbol
+          Symbols table [1]:
+          0 - :symbol
         STR
       end
     end
@@ -369,18 +369,18 @@ RSpec.describe "bin/marshal-cli options" do
             (object-with-dump-method
               (symbol
                 (length 4)
-                (content "Time"))
+                (bytes "Time"))
               (length 8)
-              (dump "5.\x1F\x80\x00\x00\x00\xEC"))
+              (bytes "5.\x1F\x80\x00\x00\x00\xEC"))
             (ivars-count 2)
             (symbol
               (length 6)
-              (content "offset"))
+              (bytes "offset"))
             (integer
               (value 0))
             (symbol
               (length 4)
-              (content "zone"))
+              (bytes "zone"))
             (nil))
         STR
       ensure
@@ -424,18 +424,18 @@ RSpec.describe "bin/marshal-cli options" do
             (object-with-dump-method
               (symbol                                        # symbol #0
                 (length 4)
-                (content "Time"))
+                (bytes "Time"))
               (length 8)
-              (dump "5.\x1F\x80\x00\x00\x00\xEC"))
+              (bytes "5.\x1F\x80\x00\x00\x00\xEC"))
             (ivars-count 2)
             (symbol                                          # symbol #1
               (length 6)
-              (content "offset"))
+              (bytes "offset"))
             (integer
               (value 0))
             (symbol                                          # symbol #2
               (length 4)
-              (content "zone"))
+              (bytes "zone"))
             (nil))
         STR
       end

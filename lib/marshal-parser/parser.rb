@@ -41,9 +41,9 @@ module MarshalParser
 
       when Lexer::STRING_PREFIX
         length = next_token
-        content = next_token
+        bytes = next_token
 
-        StringNode.new(token, length, content)
+        StringNode.new(token, length, bytes)
 
       when Lexer::OBJECT_WITH_IVARS_PREFIX
         child = build_ast_node
@@ -65,10 +65,10 @@ module MarshalParser
 
       when Lexer::SYMBOL_PREFIX
         length = next_token
-        content = next_token
-        @symbols << @lexer.source_string[content.index, content.length]
+        bytes = next_token
+        @symbols << @lexer.source_string[bytes.index, bytes.length]
 
-        SymbolNode.new(token, length, content, @symbols.size - 1)
+        SymbolNode.new(token, length, bytes, @symbols.size - 1)
 
       when Lexer::TRUE
         TrueNode.new(token)
@@ -207,9 +207,9 @@ module MarshalParser
         assert_node_type class_name_node, SymbolNode, SymbolLinkNode
 
         length = next_token
-        user_dump = next_token
+        bytes = next_token
 
-        ObjectWithDumpMethodNode.new(token, class_name_node, length, user_dump)
+        ObjectWithDumpMethodNode.new(token, class_name_node, length, bytes)
 
       when Lexer::OBJECT_WITH_MARSHAL_DUMP_PREFIX
         class_name_node = build_ast_node
@@ -333,29 +333,29 @@ module MarshalParser
     end
 
     class StringNode < Node
-      def initialize(marker_token, length_token, content_token)
+      def initialize(marker_token, length_token, bytes_token)
         super()
         assert_token_type marker_token, Lexer::STRING_PREFIX
         assert_token_type length_token, Lexer::INTEGER
-        assert_token_type content_token, Lexer::STRING
+        assert_token_type bytes_token, Lexer::STRING
 
         @marker_token = marker_token
         @length_token = length_token
-        @content_token = content_token
+        @bytes_token = bytes_token
       end
 
       def child_entities
-        [@marker_token, @length_token, @content_token]
+        [@marker_token, @length_token, @bytes_token]
       end
 
       def literal_token
-        @content_token
+        @bytes_token
       end
 
       def attributes
         {
           @length_token => { name: :length, value: @length_token.value },
-          @content_token => { name: :content, value: @content_token }
+          @bytes_token => { name: :bytes, value: @bytes_token }
         }
       end
     end
@@ -388,20 +388,20 @@ module MarshalParser
     class SymbolNode < Node
       include Annotatable
 
-      def initialize(marker_token, length_token, content_token, link_to_symbol)
+      def initialize(marker_token, length_token, bytes_token, link_to_symbol)
         super()
         assert_token_type marker_token, Lexer::SYMBOL_PREFIX
         assert_token_type length_token, Lexer::INTEGER
-        assert_token_type content_token, Lexer::SYMBOL
+        assert_token_type bytes_token, Lexer::SYMBOL
 
         @marker_token = marker_token
         @length_token = length_token
-        @content_token = content_token
+        @bytes_token = bytes_token
         @link_to_symbol = link_to_symbol # just Integer, index in the Symbols table
       end
 
       def child_entities
-        [@marker_token, @length_token, @content_token]
+        [@marker_token, @length_token, @bytes_token]
       end
 
       def annotation
@@ -409,13 +409,13 @@ module MarshalParser
       end
 
       def literal_token
-        @content_token
+        @bytes_token
       end
 
       def attributes
         {
           @length_token => { name: :length, value: @length_token.value },
-          @content_token => { name: :content, value: @content_token }
+          @bytes_token => { name: :bytes, value: @bytes_token }
         }
       end
     end
@@ -820,30 +820,30 @@ module MarshalParser
     end
 
     class ObjectWithDumpMethodNode < Node
-      def initialize(token, class_name_node, length, user_dump)
+      def initialize(token, class_name_node, length, bytes)
         super()
         assert_token_type token, Lexer::OBJECT_WITH_DUMP_PREFIX
         assert_token_type length, Lexer::INTEGER
-        assert_token_type user_dump, Lexer::STRING
+        assert_token_type bytes, Lexer::STRING
 
         @prefix = token
         @class_name_node = class_name_node
         @length = length
-        @user_dump = user_dump
+        @bytes = bytes
       end
 
       def child_entities
-        [@prefix, @class_name_node, @length, @user_dump]
+        [@prefix, @class_name_node, @length, @bytes]
       end
 
       def literal_token
-        @user_dump
+        @bytes
       end
 
       def attributes
         {
           @length => { name: :length, value: @length.value },
-          @user_dump => { name: :dump, value: @user_dump }
+          @bytes => { name: :bytes, value: @bytes }
         }
       end
     end
