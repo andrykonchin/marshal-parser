@@ -194,7 +194,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (object-with-marshal-dump-method
           (symbol
             (length 8)
-            (content "Rational"))
+            (bytes "Rational"))
           (array
             (length 2)
             (integer
@@ -212,7 +212,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (object-with-marshal-dump-method
           (symbol
             (length 7)
-            (content "Complex"))
+            (bytes "Complex"))
           (array
             (length 2)
             (integer
@@ -230,11 +230,11 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (object-with-ivars
           (string
             (length 5)
-            (content "Hello"))
+            (bytes "Hello"))
           (ivars-count 1)
           (symbol
             (length 1)
-            (content "E"))
+            (bytes "E"))
           (true))
       STR
     end
@@ -246,7 +246,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
       expect(formatted_output(dump)).to eq <<~'STR'.b.chomp
         (symbol
           (length 5)
-          (content "Hello"))
+          (bytes "Hello"))
       STR
     end
 
@@ -259,10 +259,10 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (length 3)
           (symbol
             (length 5)
-            (content "Hello"))
+            (bytes "Hello"))
           (symbol
             (length 5)
-            (content "world"))
+            (bytes "world"))
           (symbol-link
             (index 0)))
       STR
@@ -290,7 +290,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (size 1)
             (symbol
               (length 1)
-              (content "a"))
+              (bytes "a"))
             (integer
               (value 0)))
         STR
@@ -321,7 +321,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (size 0)
             (symbol
               (length 6)
-              (content "foobar")))
+              (bytes "foobar")))
         STR
       end
 
@@ -336,7 +336,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (subclass
             (symbol
               (length 4)
-              (content "Hash"))
+              (bytes "Hash"))
             (hash
               (size 0)))
         STR
@@ -351,20 +351,20 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (object
           (symbol
             (length 5)
-            (content "Range"))
+            (bytes "Range"))
           (ivars-count 3)
           (symbol
             (length 4)
-            (content "excl"))
+            (bytes "excl"))
           (false)
           (symbol
             (length 5)
-            (content "begin"))
+            (bytes "begin"))
           (integer
             (value 0))
           (symbol
             (length 3)
-            (content "end"))
+            (bytes "end"))
           (integer
             (value 42)))
       STR
@@ -384,7 +384,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (ivars-count 1)
             (symbol
               (length 1)
-              (content "E"))
+              (bytes "E"))
             (false))
         STR
       end
@@ -402,7 +402,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (ivars-count 1)
             (symbol
               (length 1)
-              (content "E"))
+              (bytes "E"))
             (false))
         STR
       end
@@ -420,18 +420,18 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (object-with-dump-method
               (symbol
                 (length 4)
-                (content "Time"))
+                (bytes "Time"))
               (length 8)
-              (dump "i\xC7\x1E\x80\x00\x00\xE0\xCD"))
+              (bytes "i\xC7\x1E\x80\x00\x00\xE0\xCD"))
             (ivars-count 2)
             (symbol
               (length 6)
-              (content "offset"))
+              (bytes "offset"))
             (integer
               (value 10800))
             (symbol
               (length 4)
-              (content "zone"))
+              (bytes "zone"))
             (nil))
         STR
       end
@@ -447,21 +447,21 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (object-with-dump-method
               (symbol
                 (length 4)
-                (content "Time"))
+                (bytes "Time"))
               (length 8)
-              (dump "l\xC7\x1E\xC0,\x01\xE0\xCD"))
+              (bytes "l\xC7\x1E\xC0,\x01\xE0\xCD"))
             (ivars-count 1)
             (symbol
               (length 4)
-              (content "zone"))
+              (bytes "zone"))
             (object-with-ivars
               (string
                 (length 3)
-                (content "UTC"))
+                (bytes "UTC"))
               (ivars-count 1)
               (symbol
                 (length 1)
-                (content "E"))
+                (bytes "E"))
               (false)))
         STR
       end
@@ -497,11 +497,11 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (struct
           (symbol
             (length 7)
-            (content "StructA"))
+            (bytes "StructA"))
           (count 1)
           (symbol
             (length 1)
-            (content "a"))
+            (bytes "a"))
           (integer
             (value 1)))
       STR
@@ -516,13 +516,13 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (object-with-dump-method
             (symbol
               (length 8)
-              (content "Encoding"))
+              (bytes "Encoding"))
             (length 5)
-            (dump "UTF-8"))
+            (bytes "UTF-8"))
           (ivars-count 1)
           (symbol
             (length 1)
-            (content "E"))
+            (bytes "E"))
           (false))
       STR
     end
@@ -535,9 +535,9 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
         (object-with-dump-method
           (symbol
             (length 10)
-            (content "BigDecimal"))
+            (bytes "BigDecimal"))
           (length 10)
-          (dump "18:0.314e1"))
+          (bytes "18:0.314e1"))
       STR
     end
 
@@ -550,7 +550,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (subclass
             (symbol
               (length 13)
-              (content "ArraySubclass"))
+              (bytes "ArraySubclass"))
             (array
               (length 0)))
         STR
@@ -564,10 +564,10 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (subclass
             (symbol
               (length 14)
-              (content "StringSubclass"))
+              (bytes "StringSubclass"))
             (string
               (length 0)
-              (content "")))
+              (bytes "")))
         STR
       end
 
@@ -579,7 +579,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (subclass
             (symbol
               (length 12)
-              (content "HashSubclass"))
+              (bytes "HashSubclass"))
             (hash
               (size 0)))
         STR
@@ -594,7 +594,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (subclass
               (symbol
                 (length 14)
-                (content "RegexpSubclass"))
+                (bytes "RegexpSubclass"))
               (regexp
                 (length 3)
                 (source-string "abc")
@@ -602,7 +602,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (ivars-count 1)
             (symbol
               (length 1)
-              (content "E"))
+              (bytes "E"))
             (false))
         STR
       end
@@ -617,7 +617,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (object
             (symbol
               (length 6)
-              (content "Object"))
+              (bytes "Object"))
             (ivars-count 0))
         STR
       end
@@ -633,11 +633,11 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (object
             (symbol
               (length 6)
-              (content "Object"))
+              (bytes "Object"))
             (ivars-count 1)
             (symbol
               (length 4)
-              (content "@foo"))
+              (bytes "@foo"))
             (integer
               (value 0)))
         STR
@@ -654,7 +654,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (object
               (symbol
                 (length 6)
-                (content "Object"))
+                (bytes "Object"))
               (ivars-count 0))
             (true)
             (object-link
@@ -671,13 +671,13 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
             (object-with-dump-method
               (symbol
                 (length 11)
-                (content "UserDefined"))
+                (bytes "UserDefined"))
               (length 3)
-              (dump "1:2"))
+              (bytes "1:2"))
             (ivars-count 1)
             (symbol
               (length 1)
-              (content "E"))
+              (bytes "E"))
             (true))
         STR
       end
@@ -690,7 +690,7 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (object-with-marshal-dump-method
             (symbol
               (length 11)
-              (content "UserMarshal"))
+              (bytes "UserMarshal"))
             (array
               (length 2)
               (integer
@@ -711,11 +711,11 @@ RSpec.describe MarshalParser::Formatters::AST::SExpression do
           (object-extended
             (symbol
               (length 10)
-              (content "Comparable"))
+              (bytes "Comparable"))
             (object
               (symbol
                 (length 6)
-                (content "Object"))
+                (bytes "Object"))
               (ivars-count 0)))
         STR
       end

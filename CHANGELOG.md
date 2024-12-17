@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## Changed
+
+- Changed output format of the `ast` command and renamed `content` and
+  `dump` nodes to `bytes`.
+
 ## Fixed
 
 - Fixed reading dump from file (with `--file` option) and from stdin and
