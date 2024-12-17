@@ -300,7 +300,7 @@ RSpec.describe "bin/marshal-cli options" do
               (bytes "symbol")))
 
           Symbols table [1]:
-          0    - :symbol
+          0 - :symbol
         STR
       end
     end
